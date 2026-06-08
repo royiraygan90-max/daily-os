@@ -15,6 +15,8 @@ async function main() {
   await prisma.event.deleteMany()
   await prisma.challengeLog.deleteMany()
   await prisma.challenge.deleteMany()
+  await prisma.mainQuestLog.deleteMany()
+  await prisma.mainQuest.deleteMany()
 
   // Default habits (morning routine)
   await prisma.habit.createMany({
@@ -138,6 +140,75 @@ async function main() {
         frequency: 'monthly',
         targetCount: 1,
         category: 'life',
+      },
+    ],
+  })
+
+  // Initialize PlayerProfile (preserve existing user progress — upsert with no-op update)
+  await prisma.playerProfile.upsert({
+    where: { id: 1 },
+    update: {},
+    create: { id: 1 },
+  })
+
+  // Seed MainQuests
+  await prisma.mainQuest.createMany({
+    data: [
+      {
+        title: 'פתיחת הדרך',
+        description: 'השלם את שגרת הבוקר המלאה פעם אחת',
+        icon: '⚔️',
+        xpReward: 200,
+        requirement: JSON.stringify({ type: 'win_days', value: 1 }),
+        isRepeatable: false,
+      },
+      {
+        title: 'שבוע ראשון',
+        description: 'השג 7 Win Days',
+        icon: '🔥',
+        xpReward: 500,
+        requirement: JSON.stringify({ type: 'win_days', value: 7 }),
+        isRepeatable: false,
+      },
+      {
+        title: 'סוחר מתחיל',
+        description: 'סמן 10 ימי מסחר',
+        icon: '💹',
+        xpReward: 800,
+        requirement: JSON.stringify({ type: 'trading_checkins', value: 10 }),
+        isRepeatable: false,
+      },
+      {
+        title: 'עולה רמה',
+        description: 'הגע ל-Level 5',
+        icon: '🏆',
+        xpReward: 300,
+        requirement: JSON.stringify({ type: 'level', value: 5 }),
+        isRepeatable: false,
+      },
+      {
+        title: 'גוף חזק',
+        description: 'השלם 20 אימוני כוח',
+        icon: '💪',
+        xpReward: 600,
+        requirement: JSON.stringify({ type: 'fitness_checkins', value: 20 }),
+        isRepeatable: false,
+      },
+      {
+        title: 'חודש מנצח',
+        description: 'השג 30 Win Days',
+        icon: '🌟',
+        xpReward: 1500,
+        requirement: JSON.stringify({ type: 'win_days', value: 30 }),
+        isRepeatable: false,
+      },
+      {
+        title: 'מאסטר',
+        description: 'הגע ל-Level 20',
+        icon: '🎯',
+        xpReward: 2000,
+        requirement: JSON.stringify({ type: 'level', value: 20 }),
+        isRepeatable: false,
       },
     ],
   })
