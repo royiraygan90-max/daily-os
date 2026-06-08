@@ -42,19 +42,57 @@ model Task {
   completed   Boolean  @default(false)
   date        String
   xpValue     Int      @default(15)
+  scope       String   @default("today")
   createdAt   DateTime @default(now())
 }
 
 model DailyScore {
-  id      Int     @id @default(autoincrement())
-  date    String  @unique
-  xp      Int     @default(0)
-  maxXp   Int     @default(0)
-  winDay  Boolean @default(false)
+  id           Int     @id @default(autoincrement())
+  date         String  @unique
+  xp           Int     @default(0)
+  maxXp        Int     @default(0)
+  winDay       Boolean @default(false)
+  challengeXp  Int     @default(0)
 }
 
 model Quote {
   id     Int    @id @default(autoincrement())
   text   String
   author String
+}
+
+model Event {
+  id          Int      @id @default(autoincrement())
+  title       String
+  description String?
+  color       String   @default("#7c3aed")
+  startTime   String
+  endTime     String
+  isRecurring Boolean  @default(false)
+  daysOfWeek  String?
+  date        String?
+  createdAt   DateTime @default(now())
+}
+
+model Challenge {
+  id          Int            @id @default(autoincrement())
+  title       String
+  description String?
+  icon        String
+  xpReward    Int
+  frequency   String
+  targetCount Int            @default(1)
+  category    String         @default("general")
+  isActive    Boolean        @default(true)
+  logs        ChallengeLog[]
+}
+
+model ChallengeLog {
+  id          Int       @id @default(autoincrement())
+  challengeId Int
+  challenge   Challenge @relation(fields: [challengeId], references: [id])
+  date        String
+  weekKey     String?
+  monthKey    String?
+  createdAt   DateTime  @default(now())
 }
