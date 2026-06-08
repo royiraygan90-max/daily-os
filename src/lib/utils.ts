@@ -78,12 +78,15 @@ export function lastNDays(n: number): string[] {
 
 // ISO week key "YYYY-WXX" (ISO 8601: week starts Monday, defined by Thursday)
 export function getWeekKey(dateStr: string): string {
-  const d = new Date(dateStr + 'T12:00:00')
+  const d = new Date(dateStr + 'T12:00:00Z')
   const thursday = new Date(d)
-  thursday.setDate(d.getDate() - ((d.getDay() + 6) % 7) + 3)
-  const yearStart = new Date(thursday.getFullYear(), 0, 1)
-  const weekNum = Math.ceil(((thursday.getTime() - yearStart.getTime()) / 86400000 + 1) / 7)
-  return `${thursday.getFullYear()}-W${weekNum.toString().padStart(2, '0')}`
+  thursday.setUTCDate(d.getUTCDate() - ((d.getUTCDay() + 6) % 7) + 3)
+  const jan4 = new Date(Date.UTC(thursday.getUTCFullYear(), 0, 4))
+  const jan4Day = jan4.getUTCDay()
+  const w01Monday = new Date(jan4)
+  w01Monday.setUTCDate(jan4.getUTCDate() - ((jan4Day + 6) % 7))
+  const weekNum = Math.floor((thursday.getTime() - w01Monday.getTime()) / (7 * 86400000)) + 1
+  return `${thursday.getUTCFullYear()}-W${weekNum.toString().padStart(2, '0')}`
 }
 
 // Month key "YYYY-MM" for a given "YYYY-MM-DD" date
