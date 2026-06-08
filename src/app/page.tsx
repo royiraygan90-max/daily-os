@@ -1,16 +1,19 @@
 import { prisma } from '@/lib/prisma'
-import { getTodayIST, getDayOfYear, getLevel, getLevelName, xpToNextLevel } from '@/lib/utils'
+import { getTodayIST, getDayOfYear, getLevel, getLevelName, xpToNextLevel, getWeekKey, getMonthKey } from '@/lib/utils'
 import HabitCard from '@/components/HabitCard'
 import DailyScoreRing from '@/components/DailyScoreRing'
 import StreakBadge from '@/components/StreakBadge'
 import MorningBriefClient from '@/components/MorningBriefClient'
+import Link from 'next/link'
 
 export const dynamic = 'force-dynamic'
 
 async function getData() {
   const today = getTodayIST()
+  const weekKey = getWeekKey(today)
+  const monthKey = getMonthKey(today)
 
-  const [habits, tasks, score, quotes, goals, allScores] = await Promise.all([
+  const [habits, tasks, score, quotes, goals, allScores, challenges] = await Promise.all([
     prisma.habit.findMany({
       orderBy: { order: 'asc' },
       include: { completions: { where: { date: today } } },
@@ -20,6 +23,11 @@ async function getData() {
     prisma.quote.findMany({ orderBy: { id: 'asc' } }),
     prisma.goal.findMany({ where: { isPinned: true }, take: 1 }),
     prisma.dailyScore.findMany({ orderBy: { date: 'desc' } }),
+    prisma.challenge.findMany({
+      where: { isActive: true },
+      include: { logs: { where: { OR: [{ weekKey }, { monthKey }] } } },
+      orderBy: { id: 'asc' },
+    }),
   ])
 
   const quote = quotes.length > 0 ? quotes[getDayOfYear() % quotes.length] : null
@@ -43,7 +51,8 @@ async function getData() {
   const thisMonthPrefix = today.slice(0, 7)
   const thisMonthDays = allScores.filter((d) => d.date.startsWith(thisMonthPrefix))
   const thisMonthWins = thisMonthDays.filter((d) => d.winDay).length
-  const winRateMonth = thisMonthDays.length > 0 ? Math.round((thisMonthWins / thisMonthDays.length) * 100) : 0
+  const winRateMonth =
+    thisMonthDays.length > 0 ? Math.round((thisMonthWins / thisMonthDays.length) * 100) : 0
 
   const habitsWithStatus = habits.map((h) => ({
     id: h.id,
@@ -55,6 +64,21 @@ async function getData() {
 
   const tasksToday = tasks.length
   const tasksDone = tasks.filter((t) => t.completed).length
+
+  const challengesData = challenges.map((c) => {
+    const periodLogs =
+      c.frequency === 'weekly'
+        ? c.logs.filter((l) => l.weekKey === weekKey)
+        : c.logs.filter((l) => l.monthKey === monthKey)
+    return {
+      id: c.id,
+      title: c.title,
+      icon: c.icon,
+      targetCount: c.targetCount,
+      currentCount: periodLogs.length,
+      isCompleted: periodLogs.length >= c.targetCount,
+    }
+  })
 
   return {
     habitsWithStatus,
@@ -69,6 +93,7 @@ async function getData() {
     levelName: getLevelName(getLevel(totalXp)),
     xpProgress: xpToNextLevel(totalXp),
     winRateMonth,
+    challenges: challengesData,
   }
 }
 
@@ -139,6 +164,61 @@ export default async function MorningBriefPage() {
           <span>
             {data.tasksDone}/{data.tasksToday} משימות היום הושלמו
           </span>
+        </div>
+      </div>
+
+      {/* Challenges */}
+      <div className="card p-5">
+        <Link href="/challenges">
+          <div className="flex items-center justify-between mb-3">
+            <h2 className="text-lg font-bold" style={{ color: 'var(--text-primary)' }}>
+              ⚡ Challenges
+            </h2>
+            <span style={{ fontSize: '12px', color: 'var(--accent-purple)' }}>הכל ›</span>
+          </div>
+        </Link>
+        <div className="space-y-2">
+          {data.challenges.map((c) => (
+            <Link key={c.id} href="/challenges">
+              <div
+                className="flex items-center gap-3 p-2 rounded-lg"
+                style={{ background: 'var(--bg-card-hover)', cursor: 'pointer' }}
+              >
+                <span style={{ fontSize: '1.2rem' }}>{c.icon}</span>
+                <span className="flex-1 text-sm" style={{ color: 'var(--text-primary)' }}>
+                  {c.title}
+                </span>
+                <div
+                  style={{
+                    width: '60px',
+                    height: '5px',
+                    borderRadius: '3px',
+                    background: 'rgba(255,255,255,0.1)',
+                    overflow: 'hidden',
+                  }}
+                >
+                  <div
+                    style={{
+                      height: '100%',
+                      width: `${Math.min(c.currentCount / c.targetCount, 1) * 100}%`,
+                      background: c.isCompleted ? '#f59e0b' : 'var(--accent-purple)',
+                      borderRadius: '3px',
+                    }}
+                  />
+                </div>
+                <span
+                  style={{
+                    fontSize: '11px',
+                    color: c.isCompleted ? '#f59e0b' : 'var(--text-secondary)',
+                    minWidth: '28px',
+                    textAlign: 'right',
+                  }}
+                >
+                  {c.currentCount}/{c.targetCount}
+                </span>
+              </div>
+            </Link>
+          ))}
         </div>
       </div>
 
