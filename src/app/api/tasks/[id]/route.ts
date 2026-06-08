@@ -1,5 +1,6 @@
 import { prisma } from '@/lib/prisma'
 import { recalcDailyScore } from '@/lib/recalcDailyScore'
+import { addTotalXp } from '@/lib/playerProfile'
 import { NextRequest } from 'next/server'
 
 export async function PATCH(
@@ -10,10 +11,12 @@ export async function PATCH(
   const taskId = parseInt(id)
   const body = await request.json()
 
-  const task = await prisma.task.update({
-    where: { id: taskId },
-    data: body,
-  })
+  const existing = await prisma.task.findUnique({ where: { id: taskId } })
+  const task = await prisma.task.update({ where: { id: taskId }, data: body })
+
+  if (!existing?.completed && task.completed) {
+    await addTotalXp(task.xpValue)
+  }
 
   if (task.scope === 'today') await recalcDailyScore(task.date)
   return Response.json(task)
