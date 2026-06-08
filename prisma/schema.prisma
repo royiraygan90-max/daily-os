@@ -95,4 +95,6 @@ model ChallengeLog {
   weekKey     String?
   monthKey    String?
   createdAt   DateTime  @default(now())
+
+  @@unique([challengeId, date])
 }
