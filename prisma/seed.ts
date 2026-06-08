@@ -12,6 +12,9 @@ async function main() {
   await prisma.habit.deleteMany()
   await prisma.goal.deleteMany()
   await prisma.quote.deleteMany()
+  await prisma.event.deleteMany()
+  await prisma.challengeLog.deleteMany()
+  await prisma.challenge.deleteMany()
 
   // Default habits (morning routine)
   await prisma.habit.createMany({
@@ -56,6 +59,86 @@ async function main() {
       { text: 'כישלון הוא אופציה כאן. אם דברים לא נכשלים, אינך מחדש מספיק.', author: 'Elon Musk' },
       { text: 'משמעת היא הגשר בין מטרות להישגים.', author: 'Jim Rohn' },
       { text: 'אל תחכה. הזמן לעולם לא יהיה נכון בדיוק.', author: 'Napoleon Hill' },
+    ],
+  })
+
+  // Default recurring calendar events
+  await prisma.event.createMany({
+    data: [
+      {
+        title: 'ימי מסחר',
+        color: '#f59e0b',
+        startTime: '09:30',
+        endTime: '16:00',
+        isRecurring: true,
+        daysOfWeek: JSON.stringify([1, 2, 3, 4, 5]),
+      },
+      {
+        title: 'לימודים',
+        color: '#7c3aed',
+        startTime: '08:30',
+        endTime: '14:00',
+        isRecurring: true,
+        daysOfWeek: JSON.stringify([0, 1, 2]),
+      },
+      {
+        title: 'אימון',
+        color: '#10b981',
+        startTime: '18:00',
+        endTime: '20:00',
+        isRecurring: true,
+        daysOfWeek: JSON.stringify([1, 3, 5]),
+      },
+    ],
+  })
+
+  await prisma.challenge.createMany({
+    data: [
+      {
+        title: 'ימי מסחר',
+        description: 'לסחור לפחות 3 ימים מתוך 5 ימי המסחר בשבוע',
+        icon: '📈',
+        xpReward: 150,
+        frequency: 'weekly',
+        targetCount: 3,
+        category: 'trading',
+      },
+      {
+        title: 'אימון כוח',
+        description: '2 אימוני כוח בשבוע (Fitness Tracker)',
+        icon: '💪',
+        xpReward: 100,
+        frequency: 'weekly',
+        targetCount: 2,
+        category: 'fitness',
+      },
+      {
+        title: 'פוציבול',
+        description: 'משחק פוציבול שבועי אחד לפחות',
+        icon: '🏐',
+        xpReward: 60,
+        frequency: 'weekly',
+        targetCount: 1,
+        category: 'fitness',
+      },
+      {
+        title: 'גמישות',
+        description: 'אימון גמישות/מתיחות פעם בשבוע',
+        icon: '🧘',
+        xpReward: 60,
+        frequency: 'weekly',
+        targetCount: 1,
+        category: 'fitness',
+      },
+      {
+        title: 'בדיקת רכב',
+        description: 'לבדוק שמן ומים לרכב פעם בחודש',
+        icon: '🚗',
+        xpReward: 50,
+        frequency: 'monthly',
+        targetCount: 1,
+        category: 'life',
+      },
     ],
   })
 
