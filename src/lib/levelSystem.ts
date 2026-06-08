@@ -1,6 +1,6 @@
 // XP needed while AT level n to advance to level n+1
 export function xpForLevel(n: number): number {
-  return Math.floor(100 * Math.pow(1.15, n - 1))
+  return Math.round(100 * Math.pow(1.15, n - 1))
 }
 
 // Total XP required to reach level n from level 1 (0 for level 1)
