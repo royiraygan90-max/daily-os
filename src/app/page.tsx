@@ -1,6 +1,7 @@
 import { prisma } from '@/lib/prisma'
-import { getTodayIST, getDayOfYear, getLevel, getLevelName, xpToNextLevel, getWeekKey, getMonthKey } from '@/lib/utils'
-import HabitCard from '@/components/HabitCard'
+import { getTodayIST, getDayOfYear, getWeekKey, getMonthKey } from '@/lib/utils'
+import { getOrCreateProfile } from '@/lib/playerProfile'
+import { getXpProgress, getLevelName } from '@/lib/levelSystem'
 import DailyScoreRing from '@/components/DailyScoreRing'
 import StreakBadge from '@/components/StreakBadge'
 import MorningBriefClient from '@/components/MorningBriefClient'
@@ -13,7 +14,7 @@ async function getData() {
   const weekKey = getWeekKey(today)
   const monthKey = getMonthKey(today)
 
-  const [habits, tasks, score, quotes, goals, allScores, challenges] = await Promise.all([
+  const [habits, tasks, score, quotes, goals, allScores, challenges, profile] = await Promise.all([
     prisma.habit.findMany({
       orderBy: { order: 'asc' },
       include: { completions: { where: { date: today } } },
@@ -28,6 +29,7 @@ async function getData() {
       include: { logs: { where: { OR: [{ weekKey }, { monthKey }] } } },
       orderBy: { id: 'asc' },
     }),
+    getOrCreateProfile(),
   ])
 
   const quote = quotes.length > 0 ? quotes[getDayOfYear() % quotes.length] : null
@@ -47,7 +49,6 @@ async function getData() {
     }
   }
 
-  const totalXp = allScores.reduce((s, d) => s + d.xp, 0)
   const thisMonthPrefix = today.slice(0, 7)
   const thisMonthDays = allScores.filter((d) => d.date.startsWith(thisMonthPrefix))
   const thisMonthWins = thisMonthDays.filter((d) => d.winDay).length
@@ -80,6 +81,37 @@ async function getData() {
     }
   })
 
+  const xpProgress = getXpProgress(profile.totalXp)
+
+  // Active quests preview (first 3 incomplete)
+  const [activeQuestRows, winDays, tradingCheckins, fitnessCheckins] = await Promise.all([
+    prisma.mainQuest.findMany({
+      where: { completions: { none: {} } },
+      take: 3,
+      orderBy: { id: 'asc' },
+    }),
+    prisma.dailyScore.count({ where: { winDay: true } }),
+    prisma.challengeLog.count({ where: { challenge: { category: 'trading' } } }),
+    prisma.challengeLog.count({ where: { challenge: { category: 'fitness' } } }),
+  ])
+
+  const activeQuests = activeQuestRows.map((q) => {
+    const req = JSON.parse(q.requirement) as { type: string; value: number }
+    let current = 0
+    if (req.type === 'win_days') current = winDays
+    else if (req.type === 'trading_checkins') current = tradingCheckins
+    else if (req.type === 'fitness_checkins') current = fitnessCheckins
+    else if (req.type === 'level') current = xpProgress.level
+    return {
+      id: q.id,
+      icon: q.icon,
+      title: q.title,
+      xpReward: q.xpReward,
+      progress: Math.min(current, req.value),
+      target: req.value,
+    }
+  })
+
   return {
     habitsWithStatus,
     tasksToday,
@@ -88,12 +120,12 @@ async function getData() {
     quote,
     pinnedGoal,
     streak,
-    totalXp,
-    level: getLevel(totalXp),
-    levelName: getLevelName(getLevel(totalXp)),
-    xpProgress: xpToNextLevel(totalXp),
+    level: xpProgress.level,
+    levelName: getLevelName(xpProgress.level),
+    xpProgress,
     winRateMonth,
     challenges: challengesData,
+    activeQuests,
   }
 }
 
@@ -161,9 +193,7 @@ export default async function MorningBriefPage() {
 
         <div className="mt-4 flex items-center gap-2 text-sm" style={{ color: 'var(--text-secondary)' }}>
           <span>✅</span>
-          <span>
-            {data.tasksDone}/{data.tasksToday} משימות היום הושלמו
-          </span>
+          <span>{data.tasksDone}/{data.tasksToday} משימות היום הושלמו</span>
         </div>
       </div>
 
@@ -222,15 +252,81 @@ export default async function MorningBriefPage() {
         </div>
       </div>
 
+      {/* Active Quests Preview */}
+      {data.activeQuests.length > 0 && (
+        <div className="card p-5">
+          <Link href="/quests">
+            <div className="flex items-center justify-between mb-3">
+              <h2 className="text-lg font-bold" style={{ color: 'var(--text-primary)' }}>
+                📜 Main Quests
+              </h2>
+              <span style={{ fontSize: '12px', color: 'var(--accent-purple)' }}>הכל ›</span>
+            </div>
+          </Link>
+          <div className="space-y-2">
+            {data.activeQuests.map((q) => (
+              <Link key={q.id} href="/quests">
+                <div
+                  className="flex items-center gap-3 p-2 rounded-lg"
+                  style={{ background: 'var(--bg-card-hover)', cursor: 'pointer' }}
+                >
+                  <span style={{ fontSize: '1.2rem' }}>{q.icon}</span>
+                  <span className="flex-1 text-sm" style={{ color: 'var(--text-primary)' }}>
+                    {q.title}
+                  </span>
+                  <div
+                    style={{
+                      width: '60px',
+                      height: '5px',
+                      borderRadius: '3px',
+                      background: 'rgba(255,255,255,0.1)',
+                      overflow: 'hidden',
+                    }}
+                  >
+                    <div
+                      style={{
+                        height: '100%',
+                        width: `${Math.min(q.progress / q.target, 1) * 100}%`,
+                        background: 'var(--accent-purple)',
+                        borderRadius: '3px',
+                      }}
+                    />
+                  </div>
+                  <span
+                    style={{
+                      fontSize: '11px',
+                      color: 'var(--text-secondary)',
+                      minWidth: '36px',
+                      textAlign: 'right',
+                    }}
+                  >
+                    {q.progress}/{q.target}
+                  </span>
+                </div>
+              </Link>
+            ))}
+          </div>
+        </div>
+      )}
+
       {/* Quick stats */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
         <StreakBadge streak={data.streak} />
-        <StatCard icon="⚡" value={`${data.score.xp}`} label="XP היום" color="var(--accent-gold)" />
+        <StatCard
+          icon="⚡"
+          value={`${data.score.xp}`}
+          label="XP היום"
+          color="var(--accent-gold)"
+        />
         <StatCard
           icon="🏆"
           value={`Lv.${data.level}`}
           label={data.levelName}
           color="var(--accent-purple)"
+          progress={{
+            current: data.xpProgress.currentLevelXp,
+            max: data.xpProgress.xpNeededForNextLevel,
+          }}
         />
         <StatCard
           icon="📅"
@@ -248,11 +344,13 @@ function StatCard({
   value,
   label,
   color,
+  progress,
 }: {
   icon: string
   value: string
   label: string
   color: string
+  progress?: { current: number; max: number }
 }) {
   return (
     <div className="card p-4 flex flex-col items-center text-center gap-1">
@@ -263,6 +361,28 @@ function StatCard({
       <span className="text-xs" style={{ color: 'var(--text-secondary)' }}>
         {label}
       </span>
+      {progress && (
+        <div
+          style={{
+            width: '100%',
+            height: '4px',
+            borderRadius: '2px',
+            background: 'rgba(255,255,255,0.1)',
+            overflow: 'hidden',
+            marginTop: '4px',
+          }}
+        >
+          <div
+            style={{
+              height: '100%',
+              width: `${Math.min(100, progress.max > 0 ? (progress.current / progress.max) * 100 : 0)}%`,
+              background: color,
+              borderRadius: '2px',
+              transition: 'width 300ms',
+            }}
+          />
+        </div>
+      )}
     </div>
   )
 }

@@ -28,28 +28,6 @@ export function xpForPriority(priority: string): number {
   return ({ urgent: 30, high: 20, medium: 15, low: 10 } as Record<string, number>)[priority] ?? 15
 }
 
-// Level from total XP (every 500 XP = 1 level)
-export function getLevel(totalXp: number): number {
-  return Math.floor(totalXp / 500) + 1
-}
-
-// Trader-themed level names
-export function getLevelName(level: number): string {
-  if (level <= 5) return 'Rookie Trader'
-  if (level <= 10) return 'Market Analyst'
-  if (level <= 20) return 'Senior Trader'
-  if (level <= 35) return 'Portfolio Manager'
-  if (level <= 50) return 'Nostro Master'
-  return 'Legend'
-}
-
-// XP to next level
-export function xpToNextLevel(totalXp: number): { current: number; needed: number } {
-  const level = getLevel(totalXp)
-  const levelStartXp = (level - 1) * 500
-  return { current: totalXp - levelStartXp, needed: 500 }
-}
-
 // Week start (Sunday) in Israel timezone as "YYYY-MM-DD"
 export function getWeekStartIST(): string {
   const today = getTodayIST()

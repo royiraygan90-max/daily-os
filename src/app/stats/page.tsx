@@ -1,5 +1,6 @@
 import { prisma } from '@/lib/prisma'
-import { getTodayIST, getLevel, getLevelName, xpToNextLevel, lastNDays } from '@/lib/utils'
+import { getTodayIST, lastNDays } from '@/lib/utils'
+import { getXpProgress, getLevelName } from '@/lib/levelSystem'
 import WeeklyChart from '@/components/WeeklyChart'
 import MonthCalendar from '@/components/MonthCalendar'
 
@@ -28,9 +29,9 @@ export default async function StatsPage() {
     }
   }
 
-  const level = getLevel(totalXp)
+  const xpProgress = getXpProgress(totalXp)
+  const level = xpProgress.level
   const levelName = getLevelName(level)
-  const xpProgress = xpToNextLevel(totalXp)
 
   const week7 = lastNDays(7)
   const scoreMap = new Map(allScores.map((s) => [s.date, s]))
@@ -94,7 +95,7 @@ export default async function StatsPage() {
               🏆 {levelName} — Level {level}
             </h3>
             <p className="text-xs mt-0.5" style={{ color: 'var(--text-secondary)' }}>
-              {xpProgress.current}/{xpProgress.needed} XP לרמה הבאה
+              {xpProgress.currentLevelXp}/{xpProgress.xpNeededForNextLevel} XP לרמה הבאה
             </p>
           </div>
         </div>
@@ -102,7 +103,7 @@ export default async function StatsPage() {
           <div
             className="h-full rounded-full transition-all duration-700"
             style={{
-              width: `${Math.min(100, (xpProgress.current / xpProgress.needed) * 100)}%`,
+              width: `${Math.min(100, (xpProgress.currentLevelXp / xpProgress.xpNeededForNextLevel) * 100)}%`,
               background: 'linear-gradient(90deg, var(--accent-purple), var(--accent-gold))',
             }}
           />
