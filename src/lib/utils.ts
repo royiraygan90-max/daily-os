@@ -50,6 +50,21 @@ export function xpToNextLevel(totalXp: number): { current: number; needed: numbe
   return { current: totalXp - levelStartXp, needed: 500 }
 }
 
+// Week start (Sunday) in Israel timezone as "YYYY-MM-DD"
+export function getWeekStartIST(): string {
+  const today = getTodayIST()
+  const d = new Date(today + 'T12:00:00')
+  d.setDate(d.getDate() - d.getDay())
+  return d.toISOString().slice(0, 10)
+}
+
+// Add N days to a "YYYY-MM-DD" string
+export function addDaysToDate(dateStr: string, days: number): string {
+  const d = new Date(dateStr + 'T12:00:00')
+  d.setDate(d.getDate() + days)
+  return d.toISOString().slice(0, 10)
+}
+
 // Last N days as "YYYY-MM-DD" array (inclusive, newest last)
 export function lastNDays(n: number): string[] {
   const dates: string[] = []
@@ -59,4 +74,19 @@ export function lastNDays(n: number): string[] {
     dates.push(new Intl.DateTimeFormat('en-CA', { timeZone: 'Asia/Jerusalem' }).format(d))
   }
   return dates
+}
+
+// ISO week key "YYYY-WXX" (ISO 8601: week starts Monday, defined by Thursday)
+export function getWeekKey(dateStr: string): string {
+  const d = new Date(dateStr + 'T12:00:00')
+  const thursday = new Date(d)
+  thursday.setDate(d.getDate() - ((d.getDay() + 6) % 7) + 3)
+  const yearStart = new Date(thursday.getFullYear(), 0, 1)
+  const weekNum = Math.ceil(((thursday.getTime() - yearStart.getTime()) / 86400000 + 1) / 7)
+  return `${thursday.getFullYear()}-W${weekNum.toString().padStart(2, '0')}`
+}
+
+// Month key "YYYY-MM" for a given "YYYY-MM-DD" date
+export function getMonthKey(dateStr: string): string {
+  return dateStr.slice(0, 7)
 }

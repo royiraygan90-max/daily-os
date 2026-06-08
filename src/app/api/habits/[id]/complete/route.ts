@@ -1,5 +1,6 @@
 import { prisma } from '@/lib/prisma'
 import { getTodayIST } from '@/lib/utils'
+import { recalcDailyScore } from '@/lib/recalcDailyScore'
 import { NextRequest } from 'next/server'
 
 export async function POST(
@@ -24,30 +25,4 @@ export async function POST(
 
   const habit = await prisma.habit.findUnique({ where: { id: habitId } })
   return Response.json({ completedToday: !existing, habit })
-}
-
-async function recalcDailyScore(date: string) {
-  const habits = await prisma.habit.findMany({ include: { completions: { where: { date } } } })
-  const tasks = await prisma.task.findMany({ where: { date } })
-
-  const habitXp = habits
-    .filter((h) => h.completions.length > 0)
-    .reduce((sum, h) => sum + h.xpValue, 0)
-
-  const taskXp = tasks
-    .filter((t) => t.completed)
-    .reduce((sum, t) => sum + t.xpValue, 0)
-
-  const maxHabitXp = habits.reduce((sum, h) => sum + h.xpValue, 0)
-  const maxTaskXp = tasks.reduce((sum, t) => sum + t.xpValue, 0)
-
-  const xp = habitXp + taskXp
-  const maxXp = maxHabitXp + maxTaskXp
-  const winDay = maxXp > 0 && xp / maxXp >= 0.8
-
-  await prisma.dailyScore.upsert({
-    where: { date },
-    create: { date, xp, maxXp, winDay },
-    update: { xp, maxXp, winDay },
-  })
 }
