@@ -1,5 +1,6 @@
 import { prisma } from '@/lib/prisma'
 import { getTodayIST, getWeekKey, getMonthKey } from '@/lib/utils'
+import { addTotalXp } from '@/lib/playerProfile'
 import { NextRequest } from 'next/server'
 
 export async function POST(
@@ -43,20 +44,23 @@ export async function POST(
   const isCompleted = currentCount >= challenge.targetCount
 
   if (currentCount === challenge.targetCount) {
-    await prisma.dailyScore.upsert({
-      where: { date: today },
-      create: {
-        date: today,
-        xp: challenge.xpReward,
-        maxXp: 0,
-        challengeXp: challenge.xpReward,
-        winDay: false,
-      },
-      update: {
-        challengeXp: { increment: challenge.xpReward },
-        xp: { increment: challenge.xpReward },
-      },
-    })
+    await Promise.all([
+      prisma.dailyScore.upsert({
+        where: { date: today },
+        create: {
+          date: today,
+          xp: challenge.xpReward,
+          maxXp: 0,
+          challengeXp: challenge.xpReward,
+          winDay: false,
+        },
+        update: {
+          challengeXp: { increment: challenge.xpReward },
+          xp: { increment: challenge.xpReward },
+        },
+      }),
+      addTotalXp(challenge.xpReward),
+    ])
   }
 
   return Response.json({ log, currentCount, isCompleted, checkedInToday: true }, { status: 201 })
