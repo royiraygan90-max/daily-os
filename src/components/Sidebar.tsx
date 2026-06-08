@@ -3,6 +3,8 @@ import NavLink from './NavLink'
 const navItems = [
   { href: '/', icon: '🌅', label: 'Morning Brief' },
   { href: '/tasks', icon: '✅', label: 'Tasks' },
+  { href: '/schedule', icon: '📅', label: 'Schedule' },
+  { href: '/challenges', icon: '⚡', label: 'Challenges' },
   { href: '/goals', icon: '🎯', label: 'Goals' },
   { href: '/habits', icon: '🔥', label: 'Habits' },
   { href: '/stats', icon: '📊', label: 'Stats' },
