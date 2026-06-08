@@ -1,17 +1,27 @@
 'use client'
 
 interface XPBarProps {
-  xp: number
-  maxXp: number
+  level: number
+  totalXp: number
+  currentLevelXp: number
+  xpNeededForNextLevel: number
+  progressPercent: number
 }
 
-export default function XPBar({ xp, maxXp }: XPBarProps) {
-  const pct = maxXp > 0 ? Math.min(100, Math.round((xp / maxXp) * 100)) : 0
-
+export default function XPBar({
+  level,
+  totalXp,
+  currentLevelXp,
+  xpNeededForNextLevel,
+  progressPercent,
+}: XPBarProps) {
   return (
     <div className="flex items-center gap-3 flex-1">
+      <span className="text-sm font-bold shrink-0" style={{ color: 'var(--accent-gold)' }}>
+        Lv.{level}
+      </span>
       <span className="text-xs font-medium shrink-0" style={{ color: 'var(--accent-gold)' }}>
-        ⚡ {xp} XP
+        ⚡ {totalXp.toLocaleString()} XP
       </span>
       <div
         className="flex-1 h-2 rounded-full overflow-hidden"
@@ -20,13 +30,13 @@ export default function XPBar({ xp, maxXp }: XPBarProps) {
         <div
           className="h-full rounded-full transition-all duration-500"
           style={{
-            width: `${pct}%`,
+            width: `${progressPercent}%`,
             background: 'linear-gradient(90deg, var(--accent-purple), var(--accent-gold))',
           }}
         />
       </div>
       <span className="text-xs shrink-0" style={{ color: 'var(--text-secondary)' }}>
-        {pct}%
+        {currentLevelXp.toLocaleString()}/{xpNeededForNextLevel.toLocaleString()}
       </span>
     </div>
   )

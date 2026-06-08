@@ -3,32 +3,48 @@
 import { useEffect, useState } from 'react'
 import XPBar from './XPBar'
 
-interface Score {
-  xp: number
-  maxXp: number
+interface ProfileState {
+  level: number
+  totalXp: number
+  currentLevelXp: number
+  xpNeededForNextLevel: number
+  progressPercent: number
 }
 
 export default function TopBar() {
-  const [score, setScore] = useState<Score>({ xp: 0, maxXp: 0 })
   const [hebrewDate, setHebrewDate] = useState('')
+  const [dailyPct, setDailyPct] = useState(0)
+  const [profile, setProfile] = useState<ProfileState>({
+    level: 1,
+    totalXp: 0,
+    currentLevelXp: 0,
+    xpNeededForNextLevel: 100,
+    progressPercent: 0,
+  })
 
   useEffect(() => {
-    const dateStr = new Intl.DateTimeFormat('he-IL', {
-      timeZone: 'Asia/Jerusalem',
-      weekday: 'long',
-      day: 'numeric',
-      month: 'long',
-      year: 'numeric',
-    }).format(new Date())
-    setHebrewDate(dateStr)
+    setHebrewDate(
+      new Intl.DateTimeFormat('he-IL', {
+        timeZone: 'Asia/Jerusalem',
+        weekday: 'long',
+        day: 'numeric',
+        month: 'long',
+        year: 'numeric',
+      }).format(new Date())
+    )
 
-    async function fetchScore() {
-      const res = await fetch('/api/daily-score')
-      const data = await res.json()
-      setScore(data.score)
+    async function fetchData() {
+      const [scoreRes, profileRes] = await Promise.all([
+        fetch('/api/daily-score'),
+        fetch('/api/player-profile'),
+      ])
+      const { score } = await scoreRes.json()
+      const profileData = await profileRes.json()
+      setDailyPct(score.maxXp > 0 ? Math.round((score.xp / score.maxXp) * 100) : 0)
+      setProfile(profileData)
     }
-    fetchScore()
-    const interval = setInterval(fetchScore, 30000)
+    fetchData()
+    const interval = setInterval(fetchData, 30000)
     return () => clearInterval(interval)
   }, [])
 
@@ -40,7 +56,16 @@ export default function TopBar() {
       <span className="text-sm shrink-0" style={{ color: 'var(--text-secondary)' }}>
         {hebrewDate}
       </span>
-      <XPBar xp={score.xp} maxXp={score.maxXp} />
+      <XPBar
+        level={profile.level}
+        totalXp={profile.totalXp}
+        currentLevelXp={profile.currentLevelXp}
+        xpNeededForNextLevel={profile.xpNeededForNextLevel}
+        progressPercent={profile.progressPercent}
+      />
+      <span className="text-xs shrink-0" style={{ color: 'var(--text-secondary)' }}>
+        היום: {dailyPct}%
+      </span>
     </header>
   )
 }
