@@ -1,8 +1,3 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-// Get a free hosted Postgres database in seconds: `npx create-db`
-
 generator client {
   provider = "prisma-client"
   output   = "../src/generated/prisma"
@@ -10,4 +5,56 @@ generator client {
 
 datasource db {
   provider = "sqlite"
+}
+
+model Goal {
+  id        Int      @id @default(autoincrement())
+  text      String
+  category  String   @default("general")
+  isPinned  Boolean  @default(false)
+  createdAt DateTime @default(now())
+}
+
+model Habit {
+  id          Int        @id @default(autoincrement())
+  name        String
+  icon        String
+  xpValue     Int        @default(10)
+  order       Int        @default(0)
+  completions HabitLog[]
+}
+
+model HabitLog {
+  id        Int     @id @default(autoincrement())
+  habitId   Int
+  habit     Habit   @relation(fields: [habitId], references: [id])
+  date      String
+  completed Boolean @default(true)
+
+  @@unique([habitId, date])
+}
+
+model Task {
+  id          Int      @id @default(autoincrement())
+  text        String
+  priority    String   @default("medium")
+  isRecurring Boolean  @default(false)
+  completed   Boolean  @default(false)
+  date        String
+  xpValue     Int      @default(15)
+  createdAt   DateTime @default(now())
+}
+
+model DailyScore {
+  id      Int     @id @default(autoincrement())
+  date    String  @unique
+  xp      Int     @default(0)
+  maxXp   Int     @default(0)
+  winDay  Boolean @default(false)
+}
+
+model Quote {
+  id     Int    @id @default(autoincrement())
+  text   String
+  author String
 }
