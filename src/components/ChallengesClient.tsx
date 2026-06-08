@@ -30,32 +30,47 @@ interface Props {
 
 export default function ChallengesClient({ initialChallenges }: Props) {
   const [challenges, setChallenges] = useState(initialChallenges)
+  const [pending, setPending] = useState<Set<number>>(new Set())
 
   const weekly = challenges.filter((c) => c.frequency === 'weekly')
   const monthly = challenges.filter((c) => c.frequency === 'monthly')
 
   async function handleCheckin(id: number) {
-    const res = await fetch(`/api/challenges/${id}/checkin`, { method: 'POST' })
-    const data = await res.json()
-    setChallenges((prev) =>
-      prev.map((c) =>
-        c.id === id
-          ? { ...c, currentCount: data.currentCount, isCompleted: data.isCompleted, checkedInToday: data.checkedInToday }
-          : c
+    if (pending.has(id)) return
+    setPending((prev) => new Set(prev).add(id))
+    try {
+      const res = await fetch(`/api/challenges/${id}/checkin`, { method: 'POST' })
+      if (!res.ok) return
+      const data = await res.json()
+      setChallenges((prev) =>
+        prev.map((c) =>
+          c.id === id
+            ? { ...c, currentCount: data.currentCount, isCompleted: data.isCompleted, checkedInToday: data.checkedInToday }
+            : c
+        )
       )
-    )
+    } finally {
+      setPending((prev) => { const s = new Set(prev); s.delete(id); return s })
+    }
   }
 
   async function handleUndo(id: number) {
-    const res = await fetch(`/api/challenges/${id}/checkin`, { method: 'DELETE' })
-    const data = await res.json()
-    setChallenges((prev) =>
-      prev.map((c) =>
-        c.id === id
-          ? { ...c, currentCount: data.currentCount, isCompleted: data.isCompleted, checkedInToday: data.checkedInToday }
-          : c
+    if (pending.has(id)) return
+    setPending((prev) => new Set(prev).add(id))
+    try {
+      const res = await fetch(`/api/challenges/${id}/checkin`, { method: 'DELETE' })
+      if (!res.ok) return
+      const data = await res.json()
+      setChallenges((prev) =>
+        prev.map((c) =>
+          c.id === id
+            ? { ...c, currentCount: data.currentCount, isCompleted: data.isCompleted, checkedInToday: data.checkedInToday }
+            : c
+        )
       )
-    )
+    } finally {
+      setPending((prev) => { const s = new Set(prev); s.delete(id); return s })
+    }
   }
 
   return (
@@ -70,12 +85,12 @@ export default function ChallengesClient({ initialChallenges }: Props) {
             השבוע
           </h2>
           <span className="text-xs" style={{ color: 'var(--text-secondary)' }}>
-            מתאפס ביום ראשון
+            מתאפס ביום שני
           </span>
         </div>
         <div className="space-y-3">
           {weekly.map((c) => (
-            <ChallengeCard key={c.id} challenge={c} onCheckin={handleCheckin} onUndo={handleUndo} />
+            <ChallengeCard key={c.id} challenge={c} onCheckin={handleCheckin} onUndo={handleUndo} isLoading={pending.has(c.id)} />
           ))}
         </div>
       </section>
@@ -91,7 +106,7 @@ export default function ChallengesClient({ initialChallenges }: Props) {
         </div>
         <div className="space-y-3">
           {monthly.map((c) => (
-            <ChallengeCard key={c.id} challenge={c} onCheckin={handleCheckin} onUndo={handleUndo} />
+            <ChallengeCard key={c.id} challenge={c} onCheckin={handleCheckin} onUndo={handleUndo} isLoading={pending.has(c.id)} />
           ))}
         </div>
       </section>
@@ -103,10 +118,12 @@ function ChallengeCard({
   challenge: c,
   onCheckin,
   onUndo,
+  isLoading,
 }: {
   challenge: ChallengeData
   onCheckin: (id: number) => void
   onUndo: (id: number) => void
+  isLoading: boolean
 }) {
   const categoryColor = CATEGORY_COLORS[c.category] ?? CATEGORY_COLORS.general
   const pct = Math.min(c.currentCount / c.targetCount, 1)
@@ -221,20 +238,23 @@ function ChallengeCard({
                   fontSize: '13px',
                   cursor: 'not-allowed',
                   fontWeight: 600,
+                  opacity: isLoading ? 0.6 : 1,
                 }}
               >
                 ✓ נרשם היום
               </button>
               <button
                 onClick={() => onUndo(c.id)}
+                disabled={isLoading}
                 style={{
                   fontSize: '11px',
                   color: 'var(--text-secondary)',
                   background: 'none',
                   border: 'none',
-                  cursor: 'pointer',
+                  cursor: isLoading ? 'not-allowed' : 'pointer',
                   textDecoration: 'underline',
                   padding: 0,
+                  opacity: isLoading ? 0.6 : 1,
                 }}
               >
                 ביטול
@@ -243,8 +263,9 @@ function ChallengeCard({
           ) : (
             <button
               onClick={() => onCheckin(c.id)}
+              disabled={isLoading}
               className="btn-primary"
-              style={{ padding: '6px 14px', fontSize: '13px', background: categoryColor }}
+              style={{ padding: '6px 14px', fontSize: '13px', background: categoryColor, opacity: isLoading ? 0.6 : 1, cursor: isLoading ? 'not-allowed' : 'pointer' }}
             >
               + צ׳ק אין
             </button>
