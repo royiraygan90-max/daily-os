@@ -123,4 +123,6 @@ model MainQuestLog {
   questId     Int
   quest       MainQuest @relation(fields: [questId], references: [id])
   completedAt DateTime  @default(now())
+
+  @@index([questId])
 }
