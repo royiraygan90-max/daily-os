@@ -84,11 +84,26 @@ export async function DELETE(
   const monthKey = getMonthKey(today)
   const periodLogs = await getPeriodLogs(challengeId, challenge.frequency, weekKey, monthKey)
   const currentCount = periodLogs.length
+  const wasCompleted = currentCount + 1 >= challenge.targetCount
+  const nowCompleted = currentCount >= challenge.targetCount
+
+  if (wasCompleted && !nowCompleted) {
+    const score = await prisma.dailyScore.findUnique({ where: { date: today } })
+    if (score) {
+      await prisma.dailyScore.update({
+        where: { date: today },
+        data: {
+          challengeXp: { decrement: challenge.xpReward },
+          xp: { decrement: challenge.xpReward },
+        },
+      })
+    }
+  }
 
   return Response.json({
     deleted: true,
     currentCount,
-    isCompleted: currentCount >= challenge.targetCount,
+    isCompleted: nowCompleted,
     checkedInToday: false,
   })
 }
@@ -99,6 +114,9 @@ async function getPeriodLogs(
   weekKey: string,
   monthKey: string
 ) {
+  if (frequency !== 'weekly' && frequency !== 'monthly') {
+    throw new Error(`Unknown challenge frequency: ${frequency}`)
+  }
   return prisma.challengeLog.findMany({
     where: {
       challengeId,
