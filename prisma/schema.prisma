@@ -98,3 +98,29 @@ model ChallengeLog {
 
   @@unique([challengeId, date])
 }
+
+model PlayerProfile {
+  id        Int      @id @default(autoincrement())
+  totalXp   Int      @default(0)
+  level     Int      @default(1)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model MainQuest {
+  id           Int            @id @default(autoincrement())
+  title        String
+  description  String
+  icon         String
+  xpReward     Int
+  requirement  String
+  isRepeatable Boolean        @default(false)
+  completions  MainQuestLog[]
+}
+
+model MainQuestLog {
+  id          Int       @id @default(autoincrement())
+  questId     Int
+  quest       MainQuest @relation(fields: [questId], references: [id])
+  completedAt DateTime  @default(now())
+}
