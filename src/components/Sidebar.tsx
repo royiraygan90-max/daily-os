@@ -5,6 +5,7 @@ const navItems = [
   { href: '/tasks', icon: '✅', label: 'Tasks' },
   { href: '/schedule', icon: '📅', label: 'Schedule' },
   { href: '/challenges', icon: '⚡', label: 'Challenges' },
+  { href: '/quests', icon: '📜', label: 'Quests' },
   { href: '/goals', icon: '🎯', label: 'Goals' },
   { href: '/habits', icon: '🔥', label: 'Habits' },
   { href: '/stats', icon: '📊', label: 'Stats' },
