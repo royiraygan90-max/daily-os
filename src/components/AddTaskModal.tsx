@@ -2,9 +2,23 @@
 
 import { useState } from 'react'
 
+type Scope = 'today' | 'short_term' | 'long_term'
+
+interface Task {
+  id: number
+  text: string
+  priority: string
+  isRecurring: boolean
+  completed: boolean
+  date: string
+  xpValue: number
+  scope: string
+}
+
 interface AddTaskModalProps {
+  defaultScope: Scope
   onClose: () => void
-  onAdd: (task: { id: number; text: string; priority: string; isRecurring: boolean; completed: boolean; date: string; xpValue: number }) => void
+  onAdd: (task: Task) => void
 }
 
 const priorities = [
@@ -14,9 +28,16 @@ const priorities = [
   { value: 'low', label: 'נמוך', color: 'var(--text-secondary)' },
 ]
 
-export default function AddTaskModal({ onClose, onAdd }: AddTaskModalProps) {
+const scopes: { value: Scope; label: string }[] = [
+  { value: 'today', label: 'היום' },
+  { value: 'short_term', label: 'טווח קרוב' },
+  { value: 'long_term', label: 'טווח ארוך' },
+]
+
+export default function AddTaskModal({ defaultScope, onClose, onAdd }: AddTaskModalProps) {
   const [text, setText] = useState('')
   const [priority, setPriority] = useState('medium')
+  const [scope, setScope] = useState<Scope>(defaultScope)
   const [isRecurring, setIsRecurring] = useState(false)
   const [loading, setLoading] = useState(false)
 
@@ -27,7 +48,12 @@ export default function AddTaskModal({ onClose, onAdd }: AddTaskModalProps) {
     const res = await fetch('/api/tasks', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ text: text.trim(), priority, isRecurring }),
+      body: JSON.stringify({
+        text: text.trim(),
+        priority,
+        isRecurring: scope === 'today' ? isRecurring : false,
+        scope,
+      }),
     })
     const task = await res.json()
     onAdd(task)
@@ -54,9 +80,37 @@ export default function AddTaskModal({ onClose, onAdd }: AddTaskModalProps) {
               onChange={(e) => setText(e.target.value)}
               placeholder="מה צריך לעשות?"
               className="w-full px-3 py-2 rounded-lg"
-              style={{ background: 'var(--bg-primary)', border: '1px solid var(--border)', color: 'var(--text-primary)' }}
+              style={{
+                background: 'var(--bg-primary)',
+                border: '1px solid var(--border)',
+                color: 'var(--text-primary)',
+              }}
             />
           </div>
+
+          <div>
+            <label className="text-sm block mb-1" style={{ color: 'var(--text-secondary)' }}>
+              טווח
+            </label>
+            <div className="grid grid-cols-3 gap-2">
+              {scopes.map((s) => (
+                <button
+                  key={s.value}
+                  type="button"
+                  onClick={() => setScope(s.value)}
+                  className="px-2 py-2 rounded-lg text-sm font-medium transition-all"
+                  style={{
+                    border: `1px solid ${scope === s.value ? 'var(--accent-purple)' : 'var(--border)'}`,
+                    background: scope === s.value ? 'rgba(124,58,237,0.2)' : 'var(--bg-primary)',
+                    color: scope === s.value ? 'var(--accent-purple)' : 'var(--text-secondary)',
+                  }}
+                >
+                  {s.label}
+                </button>
+              ))}
+            </div>
+          </div>
+
           <div>
             <label className="text-sm block mb-1" style={{ color: 'var(--text-secondary)' }}>
               עדיפות
@@ -79,19 +133,28 @@ export default function AddTaskModal({ onClose, onAdd }: AddTaskModalProps) {
               ))}
             </div>
           </div>
-          <label className="flex items-center gap-2 cursor-pointer">
-            <input
-              type="checkbox"
-              checked={isRecurring}
-              onChange={(e) => setIsRecurring(e.target.checked)}
-              className="w-4 h-4"
-            />
-            <span className="text-sm" style={{ color: 'var(--text-secondary)' }}>
-              משימה חוזרת (מופיעה כל יום)
-            </span>
-          </label>
+
+          {scope === 'today' && (
+            <label className="flex items-center gap-2 cursor-pointer">
+              <input
+                type="checkbox"
+                checked={isRecurring}
+                onChange={(e) => setIsRecurring(e.target.checked)}
+                className="w-4 h-4"
+              />
+              <span className="text-sm" style={{ color: 'var(--text-secondary)' }}>
+                משימה חוזרת (מופיעה כל יום)
+              </span>
+            </label>
+          )}
+
           <div className="flex gap-2">
-            <button type="button" onClick={onClose} className="flex-1 btn-primary" style={{ background: 'var(--bg-card-hover)' }}>
+            <button
+              type="button"
+              onClick={onClose}
+              className="flex-1 btn-primary"
+              style={{ background: 'var(--bg-card-hover)' }}
+            >
               ביטול
             </button>
             <button type="submit" disabled={loading} className="flex-1 btn-primary">

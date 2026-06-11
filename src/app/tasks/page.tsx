@@ -8,14 +8,14 @@ export default async function TasksPage() {
   const today = getTodayIST()
 
   const recurringTemplates = await prisma.task.findMany({
-    where: { isRecurring: true },
+    where: { isRecurring: true, scope: 'today' },
   })
   const uniqueRecurring = Array.from(
     new Map(recurringTemplates.map((t) => [t.text, t])).values()
   )
   for (const template of uniqueRecurring) {
     const exists = await prisma.task.findFirst({
-      where: { text: template.text, date: today, isRecurring: true },
+      where: { text: template.text, date: today, isRecurring: true, scope: 'today' },
     })
     if (!exists) {
       await prisma.task.create({
@@ -26,15 +26,17 @@ export default async function TasksPage() {
           completed: false,
           date: today,
           xpValue: xpForPriority(template.priority),
+          scope: 'today',
         },
       })
     }
   }
 
-  const tasks = await prisma.task.findMany({
-    where: { date: today },
-    orderBy: { createdAt: 'asc' },
-  })
+  const [todayTasks, shortTermTasks, longTermTasks] = await Promise.all([
+    prisma.task.findMany({ where: { date: today, scope: 'today' }, orderBy: { createdAt: 'asc' } }),
+    prisma.task.findMany({ where: { scope: 'short_term' }, orderBy: { createdAt: 'asc' } }),
+    prisma.task.findMany({ where: { scope: 'long_term' }, orderBy: { createdAt: 'asc' } }),
+  ])
 
   const dateStr = new Intl.DateTimeFormat('he-IL', {
     timeZone: 'Asia/Jerusalem',
@@ -43,5 +45,12 @@ export default async function TasksPage() {
     month: 'long',
   }).format(new Date())
 
-  return <TasksClient tasks={tasks} dateStr={dateStr} />
+  return (
+    <TasksClient
+      todayTasks={todayTasks}
+      shortTermTasks={shortTermTasks}
+      longTermTasks={longTermTasks}
+      dateStr={dateStr}
+    />
+  )
 }
