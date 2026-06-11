@@ -5,9 +5,9 @@
   "scripts": {
     "dev": "next dev",
     "build": "next build",
-    "start": "next start",
+    "start": "node scripts/migrate.js && next start",
     "lint": "eslint",
-    "postinstall": "prisma generate"
+    "postinstall": "prisma generate && node scripts/migrate.js"
   },
   "dependencies": {
     "@prisma/adapter-better-sqlite3": "^7.8.0",
