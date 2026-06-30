@@ -161,7 +161,7 @@ export default function EditChallengeModal({ challenge, onClose, onSave }: Props
                   className="px-3 py-2 rounded-lg text-sm font-medium"
                   style={{
                     border: `1px solid ${frequency === f ? 'var(--accent-purple)' : 'var(--border)'}`,
-                    background: frequency === f ? 'rgba(124,58,237,0.2)' : 'var(--bg-primary)',
+                    background: frequency === f ? 'rgba(59,130,246,0.2)' : 'var(--bg-primary)',
                     color: frequency === f ? 'var(--accent-purple)' : 'var(--text-secondary)',
                   }}
                 >
@@ -226,7 +226,7 @@ export default function EditChallengeModal({ challenge, onClose, onSave }: Props
                   className="px-3 py-2 rounded-lg text-sm font-medium"
                   style={{
                     border: `1px solid ${category === key ? 'var(--accent-purple)' : 'var(--border)'}`,
-                    background: category === key ? 'rgba(124,58,237,0.2)' : 'var(--bg-primary)',
+                    background: category === key ? 'rgba(59,130,246,0.2)' : 'var(--bg-primary)',
                     color: category === key ? 'var(--accent-purple)' : 'var(--text-secondary)',
                   }}
                 >

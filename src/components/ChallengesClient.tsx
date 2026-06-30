@@ -23,7 +23,7 @@ const CATEGORY_COLORS: Record<string, string> = {
   trading: '#f59e0b',
   fitness: '#10b981',
   life: '#3b82f6',
-  general: '#7c3aed',
+  general: '#06b6d4',
 }
 
 interface Props {

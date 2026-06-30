@@ -267,7 +267,7 @@ function TaskRow({
       {task.isRecurring && isToday && (
         <span
           className="text-xs px-1.5 py-0.5 rounded"
-          style={{ background: 'rgba(124,58,237,0.2)', color: 'var(--accent-purple)' }}
+          style={{ background: 'rgba(59,130,246,0.2)', color: 'var(--accent-purple)' }}
         >
           🔄
         </span>

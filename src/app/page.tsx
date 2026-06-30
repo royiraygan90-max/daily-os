@@ -148,8 +148,8 @@ export default async function MorningBriefPage() {
       <div
         className="card p-6 rounded-2xl"
         style={{
-          background: 'linear-gradient(135deg, rgba(124,58,237,0.15), rgba(245,158,11,0.05))',
-          borderColor: 'rgba(124,58,237,0.3)',
+          background: 'linear-gradient(135deg, rgba(59,130,246,0.18), rgba(6,182,212,0.06))',
+          borderColor: 'rgba(59,130,246,0.35)',
         }}
       >
         <h1 className="text-3xl font-bold mb-1" style={{ color: 'var(--text-primary)' }}>

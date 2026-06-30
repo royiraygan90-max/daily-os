@@ -48,7 +48,7 @@ export default function HabitCard({ id, name, icon, xpValue, completedToday, onT
       <span
         className="text-xs px-2 py-0.5 rounded-full font-medium"
         style={{
-          background: completed ? 'rgba(16,185,129,0.2)' : 'rgba(124,58,237,0.2)',
+          background: completed ? 'rgba(16,185,129,0.2)' : 'rgba(59,130,246,0.2)',
           color: completed ? 'var(--accent-green)' : 'var(--accent-purple)',
         }}
       >

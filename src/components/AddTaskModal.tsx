@@ -101,7 +101,7 @@ export default function AddTaskModal({ defaultScope, onClose, onAdd }: AddTaskMo
                   className="px-2 py-2 rounded-lg text-sm font-medium transition-all"
                   style={{
                     border: `1px solid ${scope === s.value ? 'var(--accent-purple)' : 'var(--border)'}`,
-                    background: scope === s.value ? 'rgba(124,58,237,0.2)' : 'var(--bg-primary)',
+                    background: scope === s.value ? 'rgba(59,130,246,0.2)' : 'var(--bg-primary)',
                     color: scope === s.value ? 'var(--accent-purple)' : 'var(--text-secondary)',
                   }}
                 >

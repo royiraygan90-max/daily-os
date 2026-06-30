@@ -10,9 +10,9 @@ interface HeatmapCalendarProps {
 }
 
 function getColor(pct: number): string {
-  if (pct === 0) return '#1a1a26'
-  if (pct < 0.5) return 'rgba(124,58,237,0.3)'
-  if (pct < 0.8) return 'rgba(124,58,237,0.7)'
+  if (pct === 0) return '#141430'
+  if (pct < 0.5) return 'rgba(59,130,246,0.3)'
+  if (pct < 0.8) return 'rgba(59,130,246,0.7)'
   return 'var(--accent-gold)'
 }
 
