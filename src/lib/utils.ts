@@ -1,3 +1,11 @@
+// Dispatched whenever an action awards XP (habit/task/challenge completion),
+// so TopBar can refresh immediately instead of waiting for its poll interval.
+export const XP_UPDATED_EVENT = 'daily-os:xp-updated'
+
+export function notifyXpUpdated() {
+  window.dispatchEvent(new Event(XP_UPDATED_EVENT))
+}
+
 // Israel timezone date string "YYYY-MM-DD"
 export function getTodayIST(): string {
   return new Intl.DateTimeFormat('en-CA', { timeZone: 'Asia/Jerusalem' }).format(new Date())

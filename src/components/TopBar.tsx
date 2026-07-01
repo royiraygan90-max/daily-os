@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react'
 import XPBar from './XPBar'
+import { XP_UPDATED_EVENT } from '@/lib/utils'
 
 interface ProfileState {
   level: number
@@ -45,7 +46,11 @@ export default function TopBar() {
     }
     fetchData()
     const interval = setInterval(fetchData, 30000)
-    return () => clearInterval(interval)
+    window.addEventListener(XP_UPDATED_EVENT, fetchData)
+    return () => {
+      clearInterval(interval)
+      window.removeEventListener(XP_UPDATED_EVENT, fetchData)
+    }
   }, [])
 
   return (

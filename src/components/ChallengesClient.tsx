@@ -3,6 +3,7 @@
 import { useState } from 'react'
 import AddChallengeModal from './AddChallengeModal'
 import EditChallengeModal from './EditChallengeModal'
+import { notifyXpUpdated } from '@/lib/utils'
 
 interface ChallengeData {
   id: number
@@ -56,6 +57,7 @@ export default function ChallengesClient({ initialChallenges }: Props) {
             : c
         )
       )
+      notifyXpUpdated()
     } finally {
       setPending((prev) => { const s = new Set(prev); s.delete(id); return s })
     }
@@ -75,6 +77,7 @@ export default function ChallengesClient({ initialChallenges }: Props) {
             : c
         )
       )
+      notifyXpUpdated()
     } finally {
       setPending((prev) => { const s = new Set(prev); s.delete(id); return s })
     }

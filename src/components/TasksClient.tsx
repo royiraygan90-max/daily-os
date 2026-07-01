@@ -2,6 +2,7 @@
 
 import { useState } from 'react'
 import AddTaskModal from './AddTaskModal'
+import { notifyXpUpdated } from '@/lib/utils'
 
 interface Task {
   id: number
@@ -56,6 +57,7 @@ export default function TasksClient({ todayTasks, shortTermTasks, longTermTasks,
     })
     const updated = await res.json()
     setByScope((prev) => ({ ...prev, [scope]: prev[scope].map((t) => (t.id === id ? updated : t)) }))
+    if (updated.completed) notifyXpUpdated()
   }
 
   async function deleteTask(id: number, scope: Scope) {

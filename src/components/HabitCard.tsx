@@ -1,6 +1,7 @@
 'use client'
 
 import { useState } from 'react'
+import { notifyXpUpdated } from '@/lib/utils'
 
 interface HabitCardProps {
   id: number
@@ -25,6 +26,7 @@ export default function HabitCard({ id, name, icon, xpValue, completedToday, onT
     if (data.completedToday) {
       setShowXP(true)
       setTimeout(() => setShowXP(false), 1500)
+      notifyXpUpdated()
     }
     onToggle?.(id, data.completedToday)
     setLoading(false)
