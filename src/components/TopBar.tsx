@@ -50,22 +50,24 @@ export default function TopBar() {
 
   return (
     <header
-      className="flex items-center gap-4 px-4 py-3 border-b"
+      className="flex flex-wrap items-center gap-x-4 gap-y-2 px-4 py-3 border-b"
       style={{ background: 'var(--bg-card)', borderColor: 'var(--border)' }}
     >
-      <span className="text-sm shrink-0" style={{ color: 'var(--text-secondary)' }}>
+      <span className="text-xs md:text-sm shrink-0 order-1" style={{ color: 'var(--text-secondary)' }}>
         {hebrewDate}
       </span>
-      <XPBar
-        level={profile.level}
-        totalXp={profile.totalXp}
-        currentLevelXp={profile.currentLevelXp}
-        xpNeededForNextLevel={profile.xpNeededForNextLevel}
-        progressPercent={profile.progressPercent}
-      />
-      <span className="text-xs shrink-0" style={{ color: 'var(--text-secondary)' }}>
+      <span className="text-xs shrink-0 order-2 md:order-3" style={{ color: 'var(--text-secondary)' }}>
         היום: {dailyPct}%
       </span>
+      <div className="w-full order-3 md:order-2 md:w-auto md:flex-1">
+        <XPBar
+          level={profile.level}
+          totalXp={profile.totalXp}
+          currentLevelXp={profile.currentLevelXp}
+          xpNeededForNextLevel={profile.xpNeededForNextLevel}
+          progressPercent={profile.progressPercent}
+        />
+      </div>
     </header>
   )
 }

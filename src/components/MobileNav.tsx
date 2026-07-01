@@ -20,7 +20,12 @@ export default function MobileNav() {
   return (
     <nav
       className="md:hidden fixed bottom-0 left-0 right-0 border-t flex"
-      style={{ background: 'var(--bg-card)', borderColor: 'var(--border)', zIndex: 50 }}
+      style={{
+        background: 'var(--bg-card)',
+        borderColor: 'var(--border)',
+        zIndex: 50,
+        paddingBottom: 'env(safe-area-inset-bottom)',
+      }}
     >
       {navItems.map((item) => {
         const isActive = pathname === item.href

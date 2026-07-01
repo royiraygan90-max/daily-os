@@ -438,7 +438,7 @@ export default function ScheduleClient({ initialWeekStart, initialEvents, todayS
         onClick={() => setShowModal(true)}
         style={{
           position: 'fixed',
-          bottom: '80px',
+          bottom: 'calc(80px + env(safe-area-inset-bottom))',
           right: '24px',
           width: '52px',
           height: '52px',
