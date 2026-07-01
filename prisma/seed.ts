@@ -19,6 +19,7 @@ async function main() {
   await prisma.challenge.deleteMany()
   await prisma.mainQuestLog.deleteMany()
   await prisma.mainQuest.deleteMany()
+  await prisma.relationshipItem.deleteMany()
 
   // Default habits (morning routine)
   await prisma.habit.createMany({
@@ -143,6 +144,45 @@ async function main() {
         targetCount: 1,
         category: 'life',
       },
+      {
+        title: 'דייט קבוע',
+        description: 'לצאת לדייט (לא מסעדה כברירת מחדל) — תבדוק את רעיונות הדייטים לפני שאת/ה קובע/ת',
+        icon: '💕',
+        xpReward: 120,
+        frequency: 'weekly',
+        targetCount: 1,
+        category: 'relationship',
+      },
+    ],
+  })
+
+  // Date ideas + deep conversation questions for the "זוגיות" Morning Brief card
+  await prisma.relationshipItem.createMany({
+    data: [
+      { kind: 'date_idea', text: 'ראמן', icon: '🍜' },
+      { kind: 'date_idea', text: 'באולינג', icon: '🎳' },
+      { kind: 'date_idea', text: 'סנוקר', icon: '🎱' },
+      { kind: 'date_idea', text: 'טיול טבע', icon: '🥾' },
+      { kind: 'date_idea', text: 'בית קפה', icon: '☕' },
+      { kind: 'date_idea', text: 'חוף ים', icon: '🏖️' },
+      { kind: 'question', text: 'מה הדבר שהכי גאה אותך בי בזמן האחרון, גם אם לא אמרת את זה בקול?' },
+      { kind: 'question', text: 'מתי לאחרונה הרגשת הכי אהוב/ה על ידי, ומה בדיוק עשיתי שגרם לזה?' },
+      { kind: 'question', text: 'איזה צד בי את/ה חושב/ת שאני לא רואה מספיק בעצמי?' },
+      { kind: 'question', text: 'מה הדבר שהכי מפחיד אותך לגבי העתיד שלנו, ולא סיפרת לי עליו?' },
+      { kind: 'question', text: 'יש רגע בזוגיות שלנו שפגעתי בך ולא ידעתי? מה קרה שם?' },
+      { kind: 'question', text: 'מתי הרגשת הכי לבד, גם כשהיינו באותו חדר?' },
+      { kind: 'question', text: 'איך נראים החיים שלנו בעוד חמש שנים, בעולם האידיאלי שלך?' },
+      { kind: 'question', text: 'מה משהו שתמיד רצית לעשות ביחד ומעולם לא הצענו?' },
+      { kind: 'question', text: 'איפה את/ה רוצה שנהיה כזוג שאנחנו עדיין לא?' },
+      { kind: 'question', text: 'מה הרגע שבו הבנת שאת/ה מאוהב/ת בי?' },
+      { kind: 'question', text: 'מה הדבר הכי מפתיע שגילית עליי מאז שהתחלנו?' },
+      { kind: 'question', text: 'איזו תקופה בילדות שלך את/ה חושב/ת שעיצבה איך את/ה אוהב/ת היום?' },
+      { kind: 'question', text: 'מה הדבר הכי קטן שאני יכול/ה לעשות השבוע שהכי יגרום לך להרגיש נאהב/ת?' },
+      { kind: 'question', text: 'יש משהו שאת/ה צריך/ה ממני יותר, ומתבייש/ת לבקש?' },
+      { kind: 'question', text: 'מה קורה אצלך כשאנחנו רבים — מה את/ה באמת מרגיש/ה מתחת לכעס?' },
+      { kind: 'question', text: 'אם היינו צריכים לתאר את הזוגיות שלנו במילה אחת, מה הייתה המילה?' },
+      { kind: 'question', text: 'מה הדבר הכי מצחיק שקרה לנו ביחד שאת/ה עדיין נזכר/ת בו?' },
+      { kind: 'question', text: 'איזו תכונה שלי היית רוצה שתדבק בך?' },
     ],
   })
 

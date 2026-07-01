@@ -61,7 +61,7 @@ export async function POST(req: NextRequest) {
       xpReward: Math.max(10, Math.min(500, parseInt(String(xpReward)) || 50)),
       targetCount: Math.max(1, Math.min(30, parseInt(String(targetCount)) || 1)),
       frequency: frequency as string,
-      category: ['trading', 'fitness', 'life', 'general'].includes(category)
+      category: ['trading', 'fitness', 'life', 'general', 'relationship'].includes(category)
         ? (category as string)
         : 'general',
     },

@@ -99,6 +99,14 @@ model ChallengeLog {
   @@unique([challengeId, date])
 }
 
+model RelationshipItem {
+  id        Int      @id @default(autoincrement())
+  kind      String   // 'date_idea' | 'question'
+  text      String
+  icon      String?
+  createdAt DateTime @default(now())
+}
+
 model PlayerProfile {
   id        Int      @id @default(autoincrement())
   totalXp   Int      @default(0)

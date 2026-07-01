@@ -22,7 +22,7 @@ export async function PATCH(
   if (targetCount !== undefined) update.targetCount = Math.max(1, Math.min(30, parseInt(String(targetCount)) || 1))
   if (frequency !== undefined) update.frequency = frequency
   if (category !== undefined) {
-    update.category = ['trading', 'fitness', 'life', 'general'].includes(category)
+    update.category = ['trading', 'fitness', 'life', 'general', 'relationship'].includes(category)
       ? category
       : 'general'
   }

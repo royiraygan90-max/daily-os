@@ -24,6 +24,7 @@ const CATEGORY_COLORS: Record<string, string> = {
   fitness: '#10b981',
   life: '#3b82f6',
   general: '#06b6d4',
+  relationship: '#ec4899',
 }
 
 interface Props {

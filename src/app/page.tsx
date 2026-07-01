@@ -14,7 +14,7 @@ async function getData() {
   const weekKey = getWeekKey(today)
   const monthKey = getMonthKey(today)
 
-  const [habits, tasks, score, quotes, goals, allScores, challenges, profile] = await Promise.all([
+  const [habits, tasks, score, quotes, goals, allScores, challenges, profile, relationshipItems] = await Promise.all([
     prisma.habit.findMany({
       orderBy: { order: 'asc' },
       include: { completions: { where: { date: today } } },
@@ -30,10 +30,16 @@ async function getData() {
       orderBy: { id: 'asc' },
     }),
     getOrCreateProfile(),
+    prisma.relationshipItem.findMany({ orderBy: { id: 'asc' } }),
   ])
 
   const quote = quotes.length > 0 ? quotes[getDayOfYear() % quotes.length] : null
   const pinnedGoal = goals[0] || null
+
+  const dateIdeas = relationshipItems.filter((r) => r.kind === 'date_idea')
+  const questions = relationshipItems.filter((r) => r.kind === 'question')
+  const todayDateIdea = dateIdeas.length > 0 ? dateIdeas[getDayOfYear() % dateIdeas.length] : null
+  const todayQuestion = questions.length > 0 ? questions[(getDayOfYear() + 7) % questions.length] : null
 
   let streak = 0
   const checkDate = new Date(today)
@@ -126,6 +132,8 @@ async function getData() {
     winRateMonth,
     challenges: challengesData,
     activeQuests,
+    todayDateIdea,
+    todayQuestion,
   }
 }
 
@@ -196,6 +204,34 @@ export default async function MorningBriefPage() {
           <span>{data.tasksDone}/{data.tasksToday} משימות היום הושלמו</span>
         </div>
       </div>
+
+      {/* Relationship */}
+      {(data.todayQuestion || data.todayDateIdea) && (
+        <div
+          className="card p-5"
+          style={{ borderColor: 'rgba(236,72,153,0.35)' }}
+        >
+          <h2 className="text-lg font-bold mb-3" style={{ color: 'var(--text-primary)' }}>
+            💕 רגע של זוגיות
+          </h2>
+          {data.todayQuestion && (
+            <blockquote className="border-l-2 pl-4 mb-3" style={{ borderColor: '#ec4899' }}>
+              <p className="text-sm" style={{ color: 'var(--text-primary)' }}>
+                {data.todayQuestion.text}
+              </p>
+            </blockquote>
+          )}
+          {data.todayDateIdea && (
+            <div
+              className="flex items-center gap-2 p-2 rounded-lg text-sm"
+              style={{ background: 'rgba(236,72,153,0.1)', color: 'var(--text-primary)' }}
+            >
+              <span style={{ fontSize: '1.2rem' }}>{data.todayDateIdea.icon}</span>
+              <span>רעיון לדייט: {data.todayDateIdea.text}</span>
+            </div>
+          )}
+        </div>
+      )}
 
       {/* Challenges */}
       <div className="card p-5">

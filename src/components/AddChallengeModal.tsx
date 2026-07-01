@@ -27,6 +27,7 @@ const CATEGORIES = [
   { key: 'trading', label: '📈 מסחר' },
   { key: 'fitness', label: '💪 כושר' },
   { key: 'life', label: '🌍 חיים' },
+  { key: 'relationship', label: '💕 זוגיות' },
   { key: 'general', label: '⭐ כללי' },
 ]
 
