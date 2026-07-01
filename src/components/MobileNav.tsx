@@ -33,11 +33,12 @@ export default function MobileNav() {
           <Link
             key={item.href}
             href={item.href}
-            className="flex flex-col items-center justify-center flex-1 py-2 text-xs gap-0.5 transition-colors"
+            aria-label={item.label}
+            title={item.label}
+            className="flex items-center justify-center flex-1 py-3 transition-colors"
             style={{ color: isActive ? 'var(--accent-purple)' : 'var(--text-secondary)' }}
           >
-            <span className="text-lg leading-none">{item.icon}</span>
-            <span>{item.label}</span>
+            <span className="text-2xl leading-none">{item.icon}</span>
           </Link>
         )
       })}
