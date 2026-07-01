@@ -7,10 +7,11 @@ const dbFile = dbUrl.replace(/^file:/, '')
 const dbPath = dbFile.startsWith('/') ? dbFile : path.resolve(process.cwd(), dbFile)
 const dbDir = path.dirname(dbPath)
 
-// At build time the volume isn't mounted, so the directory won't exist — skip silently.
+// This only ever runs at container runtime now (not during npm install), so a
+// missing directory means the path needs to be created, not that we should skip.
 if (!fs.existsSync(dbDir)) {
-  console.log('migrate: database directory not found, skipping (build phase)')
-  process.exit(0)
+  console.log(`migrate: creating database directory at ${dbDir}`)
+  fs.mkdirSync(dbDir, { recursive: true })
 }
 
 try {
