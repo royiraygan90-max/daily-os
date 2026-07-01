@@ -35,10 +35,19 @@ export default function MobileNav() {
             href={item.href}
             aria-label={item.label}
             title={item.label}
-            className="flex items-center justify-center flex-1 py-3 transition-colors"
-            style={{ color: isActive ? 'var(--accent-purple)' : 'var(--text-secondary)' }}
+            className="flex items-center justify-center flex-1 py-3"
           >
-            <span className="text-2xl leading-none">{item.icon}</span>
+            <span
+              className="text-2xl leading-none flex items-center justify-center rounded-xl transition-all duration-200"
+              style={{
+                width: '44px',
+                height: '36px',
+                background: isActive ? 'rgba(59,130,246,0.18)' : 'transparent',
+                transform: isActive ? 'scale(1.08)' : 'scale(1)',
+              }}
+            >
+              {item.icon}
+            </span>
           </Link>
         )
       })}
