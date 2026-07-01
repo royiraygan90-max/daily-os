@@ -38,7 +38,7 @@ export default function AddEventModal({ onClose, onAdd }: Props) {
   const [date, setDate] = useState('')
   const [startTime, setStartTime] = useState('09:00')
   const [endTime, setEndTime] = useState('10:00')
-  const [color, setColor] = useState('#7c3aed')
+  const [color, setColor] = useState('#3b82f6')
   const [loading, setLoading] = useState(false)
 
   function toggleDay(day: number) {
@@ -142,7 +142,7 @@ export default function AddEventModal({ onClose, onAdd }: Props) {
                   style={{
                     border: `1px solid ${isRecurring === value ? 'var(--accent-purple)' : 'var(--border)'}`,
                     background:
-                      isRecurring === value ? 'rgba(124,58,237,0.2)' : 'var(--bg-primary)',
+                      isRecurring === value ? 'rgba(59,130,246,0.2)' : 'var(--bg-primary)',
                     color:
                       isRecurring === value ? 'var(--accent-purple)' : 'var(--text-secondary)',
                   }}

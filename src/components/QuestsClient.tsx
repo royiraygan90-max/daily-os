@@ -53,7 +53,7 @@ function QuestStatusBadge({ status }: { status: 'locked' | 'active' | 'completed
         fontSize: '11px',
         fontWeight: 700,
         color: 'var(--accent-purple)',
-        background: 'rgba(124,58,237,0.12)',
+        background: 'rgba(59,130,246,0.12)',
         borderRadius: '4px',
         padding: '2px 7px',
       }}
@@ -80,8 +80,8 @@ export default function QuestsClient({ quests, profile }: Props) {
       <div
         className="card p-6"
         style={{
-          background: 'linear-gradient(135deg, rgba(124,58,237,0.15), rgba(245,158,11,0.08))',
-          border: '1.5px solid rgba(124,58,237,0.4)',
+          background: 'linear-gradient(135deg, rgba(59,130,246,0.15), rgba(245,158,11,0.08))',
+          border: '1.5px solid rgba(59,130,246,0.4)',
         }}
       >
         <div className="flex items-start gap-4">
@@ -162,12 +162,12 @@ export default function QuestsClient({ quests, profile }: Props) {
                 border: q.isCompleted
                   ? '1.5px solid rgba(245,158,11,0.5)'
                   : status === 'active'
-                  ? '1.5px solid rgba(124,58,237,0.4)'
+                  ? '1.5px solid rgba(59,130,246,0.4)'
                   : '1px solid var(--border)',
                 background: q.isCompleted
                   ? 'linear-gradient(135deg, rgba(245,158,11,0.07), var(--bg-card))'
                   : 'var(--bg-card)',
-                boxShadow: status === 'active' ? '0 0 0 3px rgba(124,58,237,0.08)' : 'none',
+                boxShadow: status === 'active' ? '0 0 0 3px rgba(59,130,246,0.08)' : 'none',
                 opacity: status === 'locked' ? 0.6 : 1,
                 transition: 'border 200ms, opacity 200ms',
               }}

@@ -449,7 +449,7 @@ export default function ScheduleClient({ initialWeekStart, initialEvents, todayS
           fontSize: '26px',
           lineHeight: 1,
           cursor: 'pointer',
-          boxShadow: '0 4px 20px rgba(124,58,237,0.5)',
+          boxShadow: '0 4px 20px rgba(59,130,246,0.5)',
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'center',
