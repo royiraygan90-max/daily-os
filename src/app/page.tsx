@@ -156,8 +156,8 @@ export default async function MorningBriefPage() {
       <div
         className="card p-6 rounded-2xl"
         style={{
-          background: 'linear-gradient(135deg, rgba(59,130,246,0.18), rgba(6,182,212,0.06))',
-          borderColor: 'rgba(59,130,246,0.35)',
+          background: 'linear-gradient(135deg, rgba(217,184,118,0.16), rgba(184,134,59,0.08))',
+          borderColor: 'rgba(217,184,118,0.3)',
         }}
       >
         <h1 className="text-3xl font-bold mb-1" style={{ color: 'var(--text-primary)' }}>
@@ -179,7 +179,7 @@ export default async function MorningBriefPage() {
         {data.pinnedGoal && (
           <div
             className="mt-4 p-3 rounded-lg"
-            style={{ background: 'rgba(245,158,11,0.1)', border: '1px solid rgba(245,158,11,0.3)' }}
+            style={{ background: 'rgba(217,184,118,0.1)', border: '1px solid rgba(217,184,118,0.3)' }}
           >
             <p className="text-sm font-semibold" style={{ color: 'var(--accent-gold)' }}>
               🎯 המטרה שלך: {data.pinnedGoal.text}
@@ -267,7 +267,7 @@ export default async function MorningBriefPage() {
                     style={{
                       height: '100%',
                       width: `${Math.min(c.currentCount / c.targetCount, 1) * 100}%`,
-                      background: c.isCompleted ? '#f59e0b' : 'var(--accent-purple)',
+                      background: c.isCompleted ? 'var(--accent-gold)' : 'var(--accent-purple)',
                       borderRadius: '3px',
                     }}
                   />
@@ -275,7 +275,7 @@ export default async function MorningBriefPage() {
                 <span
                   style={{
                     fontSize: '11px',
-                    color: c.isCompleted ? '#f59e0b' : 'var(--text-secondary)',
+                    color: c.isCompleted ? 'var(--accent-gold)' : 'var(--text-secondary)',
                     minWidth: '28px',
                     textAlign: 'right',
                   }}

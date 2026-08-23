@@ -24,7 +24,7 @@ interface AddTaskModalProps {
 const priorities = [
   { value: 'urgent', label: 'דחוף', color: 'var(--accent-red)' },
   { value: 'high', label: 'גבוה', color: 'var(--accent-orange)' },
-  { value: 'medium', label: 'בינוני', color: '#3b82f6' },
+  { value: 'medium', label: 'בינוני', color: 'var(--accent-cyan)' },
   { value: 'low', label: 'נמוך', color: 'var(--text-secondary)' },
 ]
 
@@ -101,7 +101,7 @@ export default function AddTaskModal({ defaultScope, onClose, onAdd }: AddTaskMo
                   className="px-2 py-2 rounded-lg text-sm font-medium transition-all"
                   style={{
                     border: `1px solid ${scope === s.value ? 'var(--accent-purple)' : 'var(--border)'}`,
-                    background: scope === s.value ? 'rgba(59,130,246,0.2)' : 'var(--bg-primary)',
+                    background: scope === s.value ? 'rgba(217,184,118,0.16)' : 'var(--bg-primary)',
                     color: scope === s.value ? 'var(--accent-purple)' : 'var(--text-secondary)',
                   }}
                 >

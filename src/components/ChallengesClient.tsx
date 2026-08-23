@@ -21,10 +21,10 @@ interface ChallengeData {
 }
 
 const CATEGORY_COLORS: Record<string, string> = {
-  trading: '#f59e0b',
-  fitness: '#10b981',
-  life: '#3b82f6',
-  general: '#06b6d4',
+  trading: 'var(--accent-gold)',
+  fitness: 'var(--accent-green)',
+  life: 'var(--accent-purple)',
+  general: 'var(--accent-cyan)',
   relationship: '#ec4899',
 }
 
@@ -115,9 +115,9 @@ export default function ChallengesClient({ initialChallenges }: Props) {
             padding: '6px 14px',
             fontSize: '13px',
             borderRadius: '8px',
-            background: editMode ? 'rgba(239,68,68,0.15)' : 'var(--bg-card-hover)',
-            border: `1px solid ${editMode ? 'rgba(239,68,68,0.4)' : 'var(--border)'}`,
-            color: editMode ? '#ef4444' : 'var(--text-secondary)',
+            background: editMode ? 'rgba(226,147,138,0.15)' : 'var(--bg-card-hover)',
+            border: `1px solid ${editMode ? 'rgba(226,147,138,0.4)' : 'var(--border)'}`,
+            color: editMode ? 'var(--accent-red)' : 'var(--text-secondary)',
             cursor: 'pointer',
             fontWeight: 600,
           }}
@@ -269,16 +269,16 @@ function ChallengeCard({
       className="card p-4"
       style={{
         border: editMode
-          ? '1.5px solid rgba(239,68,68,0.35)'
+          ? '1.5px solid rgba(226,147,138,0.35)'
           : c.isCompleted
-          ? '1.5px solid #f59e0b'
+          ? '1.5px solid var(--accent-gold)'
           : '1px solid var(--border)',
         background: editMode
           ? 'var(--bg-card)'
           : c.isCompleted
-          ? 'linear-gradient(135deg, rgba(245,158,11,0.07), var(--bg-card))'
+          ? 'linear-gradient(135deg, rgba(217,184,118,0.07), var(--bg-card))'
           : 'var(--bg-card)',
-        boxShadow: editMode ? '0 0 0 3px rgba(239,68,68,0.08)' : 'none',
+        boxShadow: editMode ? '0 0 0 3px rgba(226,147,138,0.08)' : 'none',
         transition: 'border 200ms, box-shadow 200ms',
       }}
     >
@@ -296,8 +296,8 @@ function ChallengeCard({
                 style={{
                   fontSize: '11px',
                   fontWeight: 700,
-                  color: '#f59e0b',
-                  background: 'rgba(245,158,11,0.12)',
+                  color: 'var(--accent-gold)',
+                  background: 'rgba(217,184,118,0.12)',
                   borderRadius: '4px',
                   padding: '1px 6px',
                 }}
@@ -310,7 +310,9 @@ function ChallengeCard({
                 marginRight: 'auto',
                 fontSize: '12px',
                 fontWeight: 600,
-                color: !editMode && c.isCompleted ? '#f59e0b' : 'var(--text-secondary)',
+                color: !editMode && c.isCompleted ? 'var(--accent-gold)' : 'var(--text-secondary)',
+                direction: 'ltr',
+                unicodeBidi: 'isolate',
               }}
             >
               +{c.xpReward} XP
@@ -340,7 +342,7 @@ function ChallengeCard({
                     height: '100%',
                     width: `${pct * 100}%`,
                     borderRadius: '3px',
-                    background: c.isCompleted ? '#f59e0b' : 'var(--accent-purple)',
+                    background: c.isCompleted ? 'var(--accent-gold)' : 'var(--accent-purple)',
                     transition: 'width 300ms ease',
                   }}
                 />
@@ -359,7 +361,7 @@ function ChallengeCard({
                         background:
                           i < c.currentCount
                             ? c.isCompleted
-                              ? '#f59e0b'
+                              ? 'var(--accent-gold)'
                               : 'var(--accent-purple)'
                             : 'rgba(255,255,255,0.15)',
                         transition: 'background 200ms',
@@ -391,7 +393,7 @@ function ChallengeCard({
               <button
                 onClick={onDeleteConfirm}
                 style={{
-                  color: '#ef4444',
+                  color: 'var(--accent-red)',
                   background: 'none',
                   border: 'none',
                   cursor: 'pointer',

@@ -27,7 +27,7 @@ const PRIORITY_ORDER = ['urgent', 'high', 'medium', 'low']
 const PRIORITY_LABELS: Record<string, { label: string; color: string }> = {
   urgent: { label: 'דחוף', color: 'var(--accent-red)' },
   high: { label: 'גבוה', color: 'var(--accent-orange)' },
-  medium: { label: 'בינוני', color: '#3b82f6' },
+  medium: { label: 'בינוני', color: 'var(--accent-cyan)' },
   low: { label: 'נמוך', color: 'var(--text-secondary)' },
 }
 
@@ -242,8 +242,8 @@ function TaskRow({
     <div
       className="card flex items-center gap-3 px-4 py-3"
       style={{
-        borderColor: task.completed ? 'rgba(16,185,129,0.3)' : 'var(--border)',
-        background: task.completed ? 'rgba(16,185,129,0.05)' : 'var(--bg-card)',
+        borderColor: task.completed ? 'rgba(52,211,153,0.3)' : 'var(--border)',
+        background: task.completed ? 'rgba(52,211,153,0.05)' : 'var(--bg-card)',
       }}
     >
       <button
@@ -269,13 +269,13 @@ function TaskRow({
       {task.isRecurring && isToday && (
         <span
           className="text-xs px-1.5 py-0.5 rounded"
-          style={{ background: 'rgba(59,130,246,0.2)', color: 'var(--accent-purple)' }}
+          style={{ background: 'rgba(217,184,118,0.16)', color: 'var(--accent-purple)' }}
         >
           🔄
         </span>
       )}
       {showXp && (
-        <span className="text-xs" style={{ color: 'var(--accent-gold)' }}>
+        <span className="text-xs" style={{ color: 'var(--accent-gold)', direction: 'ltr', unicodeBidi: 'isolate' }}>
           +{task.xpValue}
         </span>
       )}

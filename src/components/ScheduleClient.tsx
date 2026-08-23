@@ -220,7 +220,7 @@ export default function ScheduleClient({ initialWeekStart, initialEvents, todayS
                   padding: '8px 2px',
                   textAlign: 'center',
                   borderBottom: isToday ? '2px solid var(--accent-purple)' : '2px solid transparent',
-                  background: isToday ? '#1a1a2e' : 'transparent',
+                  background: isToday ? 'rgba(217,184,118,0.08)' : 'transparent',
                 }}
               >
                 <div
@@ -443,13 +443,13 @@ export default function ScheduleClient({ initialWeekStart, initialEvents, todayS
           width: '52px',
           height: '52px',
           borderRadius: '50%',
-          background: 'var(--accent-purple)',
-          color: 'white',
+          background: 'linear-gradient(135deg,#f0c674,#b8863b)',
+          color: '#0a0a0c',
           border: 'none',
           fontSize: '26px',
           lineHeight: 1,
           cursor: 'pointer',
-          boxShadow: '0 4px 20px rgba(59,130,246,0.5)',
+          boxShadow: '0 4px 20px rgba(217,184,118,0.4)',
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'center',

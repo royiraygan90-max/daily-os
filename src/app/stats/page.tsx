@@ -172,7 +172,7 @@ export default async function StatsPage() {
                   {d.xp} XP
                 </span>
                 {d.winDay && (
-                  <span className="text-xs px-2 py-0.5 rounded" style={{ background: 'rgba(16,185,129,0.2)', color: 'var(--accent-green)' }}>
+                  <span className="text-xs px-2 py-0.5 rounded" style={{ background: 'rgba(52,211,153,0.2)', color: 'var(--accent-green)' }}>
                     Win Day
                   </span>
                 )}

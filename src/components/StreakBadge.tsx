@@ -6,7 +6,7 @@ export default function StreakBadge({ streak }: StreakBadgeProps) {
   return (
     <div
       className="flex items-center gap-2 px-3 py-2 rounded-lg"
-      style={{ background: 'rgba(245,158,11,0.1)', border: '1px solid rgba(245,158,11,0.3)' }}
+      style={{ background: 'rgba(217,184,118,0.1)', border: '1px solid rgba(217,184,118,0.3)' }}
     >
       <span className="text-xl">🔥</span>
       <div>

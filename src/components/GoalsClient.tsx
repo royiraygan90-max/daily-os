@@ -13,7 +13,7 @@ interface Goal {
 const categoryConfig: Record<string, { label: string; color: string; icon: string }> = {
   career: { label: 'קריירה', color: 'var(--accent-gold)', icon: '💼' },
   health: { label: 'בריאות', color: 'var(--accent-green)', icon: '💪' },
-  money: { label: 'כסף', color: '#22d3ee', icon: '💰' },
+  money: { label: 'כסף', color: 'var(--accent-cyan)', icon: '💰' },
   life: { label: 'חיים', color: 'var(--accent-purple)', icon: '🌍' },
   general: { label: 'כללי', color: 'var(--text-secondary)', icon: '⚡' },
 }
@@ -63,8 +63,8 @@ export default function GoalsClient({ goals: initial }: { goals: Goal[] }) {
           className="card p-5 mb-6 rounded-2xl"
           style={{
             borderColor: 'var(--accent-gold)',
-            background: 'rgba(245,158,11,0.08)',
-            boxShadow: '0 0 20px rgba(245,158,11,0.1)',
+            background: 'rgba(217,184,118,0.08)',
+            boxShadow: '0 0 20px rgba(217,184,118,0.1)',
           }}
         >
           <div className="flex items-start justify-between gap-2">
@@ -88,7 +88,7 @@ export default function GoalsClient({ goals: initial }: { goals: Goal[] }) {
             className="px-3 py-1.5 rounded-lg text-sm whitespace-nowrap transition-all"
             style={{
               background: activeTab === tab ? 'var(--accent-purple)' : 'var(--bg-card)',
-              color: activeTab === tab ? 'white' : 'var(--text-secondary)',
+              color: activeTab === tab ? '#0a0a0c' : 'var(--text-secondary)',
               border: '1px solid',
               borderColor: activeTab === tab ? 'var(--accent-purple)' : 'var(--border)',
             }}

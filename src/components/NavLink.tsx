@@ -2,28 +2,28 @@
 
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
+import type { ReactNode } from 'react'
 
 interface NavLinkProps {
   href: string
-  icon: string
   label: string
+  icon: ReactNode
 }
 
-export default function NavLink({ href, icon, label }: NavLinkProps) {
+export default function NavLink({ href, label, icon }: NavLinkProps) {
   const pathname = usePathname()
   const isActive = pathname === href
 
   return (
     <Link
       href={href}
-      className="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all duration-200"
+      className="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-semibold transition-all duration-200"
       style={{
-        color: isActive ? 'var(--text-primary)' : 'var(--text-secondary)',
-        background: isActive ? 'var(--bg-card-hover)' : 'transparent',
-        borderLeft: isActive ? '2px solid var(--accent-purple)' : '2px solid transparent',
+        color: isActive ? 'var(--accent-gold)' : 'var(--text-secondary)',
+        background: isActive ? 'rgba(217,184,118,.12)' : 'transparent',
       }}
     >
-      <span className="text-lg">{icon}</span>
+      {icon}
       <span>{label}</span>
     </Link>
   )
