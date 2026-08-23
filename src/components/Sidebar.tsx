@@ -1,6 +1,4 @@
 import NavLink from './NavLink'
-import { getOrCreateProfile } from '@/lib/playerProfile'
-import { getXpProgress, getLevelName } from '@/lib/levelSystem'
 import { HomeIcon, TasksIcon, ScheduleIcon, ChallengesIcon, QuestsIcon, GoalsIcon, HabitsIcon, StatsIcon } from './icons'
 
 const navItems = [
@@ -14,11 +12,7 @@ const navItems = [
   { href: '/stats', icon: StatsIcon, label: 'סטטיסטיקות' },
 ]
 
-export default async function Sidebar() {
-  const profile = await getOrCreateProfile()
-  const { level } = getXpProgress(profile.totalXp)
-  const levelName = getLevelName(level)
-
+export default function Sidebar() {
   return (
     <aside
       className="hidden md:flex flex-col w-60 min-h-screen shrink-0 border-l"
@@ -26,19 +20,14 @@ export default async function Sidebar() {
     >
       <div className="flex items-center gap-3 px-4 py-5 border-b" style={{ borderColor: 'var(--border)' }}>
         <div
-          className="flex items-center justify-center shrink-0 font-extrabold"
-          style={{ width: 40, height: 40, borderRadius: 12, background: 'linear-gradient(135deg,#f0c674,#b8863b)', color: '#0a0a0c', fontSize: 14 }}
+          className="flex items-center justify-center flex-shrink-0 font-extrabold"
+          style={{ width: 40, height: 40, borderRadius: 12, background: 'linear-gradient(135deg,#f0c674,#b8863b)', color: '#0a0a0c', fontSize: 17 }}
         >
-          {level}
+          ⚡
         </div>
-        <div className="min-w-0">
-          <div className="text-sm font-bold truncate" style={{ color: 'var(--text-primary)' }}>
-            Daily OS
-          </div>
-          <div className="text-xs truncate" style={{ color: 'var(--accent-gold)' }}>
-            {levelName} · רמה {level}
-          </div>
-        </div>
+        <span className="text-base font-bold" style={{ color: 'var(--text-primary)' }}>
+          Daily OS
+        </span>
       </div>
 
       <nav className="flex flex-col gap-1 p-3 flex-1">
@@ -46,6 +35,10 @@ export default async function Sidebar() {
           <NavLink key={item.href} href={item.href} label={item.label} icon={<item.icon size={18} />} />
         ))}
       </nav>
+
+      <div className="p-4 text-xs" style={{ color: 'var(--text-secondary)' }}>
+        Level up every day ⚡
+      </div>
     </aside>
   )
 }
