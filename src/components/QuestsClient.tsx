@@ -21,8 +21,8 @@ function QuestStatusBadge({ status }: { status: 'locked' | 'active' | 'completed
         style={{
           fontSize: '11px',
           fontWeight: 700,
-          color: '#f59e0b',
-          background: 'rgba(245,158,11,0.12)',
+          color: 'var(--accent-gold)',
+          background: 'rgba(217,184,118,0.12)',
           borderRadius: '4px',
           padding: '2px 7px',
         }}
@@ -53,7 +53,7 @@ function QuestStatusBadge({ status }: { status: 'locked' | 'active' | 'completed
         fontSize: '11px',
         fontWeight: 700,
         color: 'var(--accent-purple)',
-        background: 'rgba(59,130,246,0.12)',
+        background: 'rgba(217,184,118,0.12)',
         borderRadius: '4px',
         padding: '2px 7px',
       }}
@@ -80,8 +80,8 @@ export default function QuestsClient({ quests, profile }: Props) {
       <div
         className="card p-6"
         style={{
-          background: 'linear-gradient(135deg, rgba(59,130,246,0.15), rgba(245,158,11,0.08))',
-          border: '1.5px solid rgba(59,130,246,0.4)',
+          background: 'linear-gradient(135deg, rgba(217,184,118,0.15), rgba(184,134,59,0.08))',
+          border: '1.5px solid rgba(217,184,118,0.4)',
         }}
       >
         <div className="flex items-start gap-4">
@@ -97,7 +97,7 @@ export default function QuestsClient({ quests, profile }: Props) {
               flexShrink: 0,
               fontSize: '22px',
               fontWeight: 800,
-              color: '#fff',
+              color: '#0a0a0c',
             }}
           >
             {profile.level}
@@ -160,14 +160,14 @@ export default function QuestsClient({ quests, profile }: Props) {
               className="card p-4"
               style={{
                 border: q.isCompleted
-                  ? '1.5px solid rgba(245,158,11,0.5)'
+                  ? '1.5px solid rgba(217,184,118,0.5)'
                   : status === 'active'
-                  ? '1.5px solid rgba(59,130,246,0.4)'
+                  ? '1.5px solid rgba(217,184,118,0.4)'
                   : '1px solid var(--border)',
                 background: q.isCompleted
-                  ? 'linear-gradient(135deg, rgba(245,158,11,0.07), var(--bg-card))'
+                  ? 'linear-gradient(135deg, rgba(217,184,118,0.07), var(--bg-card))'
                   : 'var(--bg-card)',
-                boxShadow: status === 'active' ? '0 0 0 3px rgba(59,130,246,0.08)' : 'none',
+                boxShadow: status === 'active' ? '0 0 0 3px rgba(217,184,118,0.08)' : 'none',
                 opacity: status === 'locked' ? 0.6 : 1,
                 transition: 'border 200ms, opacity 200ms',
               }}
@@ -188,7 +188,9 @@ export default function QuestsClient({ quests, profile }: Props) {
                         marginRight: 'auto',
                         fontSize: '12px',
                         fontWeight: 700,
-                        color: q.isCompleted ? '#f59e0b' : 'var(--text-secondary)',
+                        color: q.isCompleted ? 'var(--accent-gold)' : 'var(--text-secondary)',
+                        direction: 'ltr',
+                        unicodeBidi: 'isolate',
                       }}
                     >
                       +{q.xpReward.toLocaleString()} XP
@@ -214,7 +216,7 @@ export default function QuestsClient({ quests, profile }: Props) {
                         {q.progress.toLocaleString()} / {q.requirement.value.toLocaleString()}
                       </span>
                       {q.isCompleted && q.completedAt && (
-                        <span style={{ color: '#f59e0b' }}>
+                        <span style={{ color: 'var(--accent-gold)' }}>
                           {new Date(q.completedAt).toLocaleDateString('he-IL')}
                         </span>
                       )}
@@ -232,7 +234,7 @@ export default function QuestsClient({ quests, profile }: Props) {
                           height: '100%',
                           width: `${pct * 100}%`,
                           borderRadius: '3px',
-                          background: q.isCompleted ? '#f59e0b' : 'var(--accent-purple)',
+                          background: q.isCompleted ? 'var(--accent-gold)' : 'var(--accent-purple)',
                           transition: 'width 300ms ease',
                         }}
                       />

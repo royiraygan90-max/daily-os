@@ -39,7 +39,7 @@ export default function HabitCard({ id, name, icon, xpValue, completedToday, onT
       className="card relative flex flex-col items-center gap-2 p-4 w-full text-center cursor-pointer select-none"
       style={{
         borderColor: completed ? 'var(--accent-green)' : 'var(--border)',
-        background: completed ? 'rgba(16,185,129,0.08)' : 'var(--bg-card)',
+        background: completed ? 'rgba(52,211,153,0.08)' : 'var(--bg-card)',
         opacity: loading ? 0.7 : 1,
       }}
     >
@@ -50,8 +50,10 @@ export default function HabitCard({ id, name, icon, xpValue, completedToday, onT
       <span
         className="text-xs px-2 py-0.5 rounded-full font-medium"
         style={{
-          background: completed ? 'rgba(16,185,129,0.2)' : 'rgba(59,130,246,0.2)',
+          background: completed ? 'rgba(52,211,153,0.2)' : 'rgba(217,184,118,0.16)',
           color: completed ? 'var(--accent-green)' : 'var(--accent-purple)',
+          direction: 'ltr',
+          unicodeBidi: 'isolate',
         }}
       >
         +{xpValue} XP
@@ -62,7 +64,7 @@ export default function HabitCard({ id, name, icon, xpValue, completedToday, onT
       {showXP && (
         <span
           className="xp-flash absolute -top-3 right-2 text-xs font-bold"
-          style={{ color: 'var(--accent-gold)' }}
+          style={{ color: 'var(--accent-gold)', direction: 'ltr', unicodeBidi: 'isolate' }}
         >
           +{xpValue} XP!
         </span>

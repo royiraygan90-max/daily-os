@@ -10,7 +10,7 @@ interface AddGoalModalProps {
 const categories = [
   { value: 'career', label: '💼 קריירה', color: 'var(--accent-gold)' },
   { value: 'health', label: '💪 בריאות', color: 'var(--accent-green)' },
-  { value: 'money', label: '💰 כסף', color: '#22d3ee' },
+  { value: 'money', label: '💰 כסף', color: 'var(--accent-cyan)' },
   { value: 'life', label: '🌍 חיים', color: 'var(--accent-purple)' },
   { value: 'general', label: '⚡ כללי', color: 'var(--text-secondary)' },
 ]

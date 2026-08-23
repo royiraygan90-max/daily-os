@@ -20,7 +20,7 @@ interface Props {
 }
 
 const PRESET_COLORS = [
-  { color: '#f59e0b', label: 'זהב' },
+  { color: '#f0c674', label: 'זהב' },
   { color: '#7c3aed', label: 'סגול' },
   { color: '#10b981', label: 'ירוק' },
   { color: '#3b82f6', label: 'כחול' },
@@ -38,7 +38,7 @@ export default function AddEventModal({ onClose, onAdd }: Props) {
   const [date, setDate] = useState('')
   const [startTime, setStartTime] = useState('09:00')
   const [endTime, setEndTime] = useState('10:00')
-  const [color, setColor] = useState('#3b82f6')
+  const [color, setColor] = useState('#f0c674')
   const [loading, setLoading] = useState(false)
 
   function toggleDay(day: number) {
@@ -142,7 +142,7 @@ export default function AddEventModal({ onClose, onAdd }: Props) {
                   style={{
                     border: `1px solid ${isRecurring === value ? 'var(--accent-purple)' : 'var(--border)'}`,
                     background:
-                      isRecurring === value ? 'rgba(59,130,246,0.2)' : 'var(--bg-primary)',
+                      isRecurring === value ? 'rgba(217,184,118,0.16)' : 'var(--bg-primary)',
                     color:
                       isRecurring === value ? 'var(--accent-purple)' : 'var(--text-secondary)',
                   }}

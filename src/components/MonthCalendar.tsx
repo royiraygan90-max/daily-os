@@ -16,7 +16,7 @@ function getDayStatus(score: DayScore | undefined): 'win' | 'partial' | 'miss' |
 
 const statusColors = {
   win: 'var(--accent-gold)',
-  partial: 'var(--accent-purple)',
+  partial: 'var(--text-secondary)',
   miss: 'var(--accent-red)',
   future: 'var(--border)',
 }

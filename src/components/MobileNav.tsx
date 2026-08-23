@@ -2,16 +2,14 @@
 
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
+import { HomeIcon, TasksIcon, GoalsIcon, ChallengesIcon, ScheduleIcon } from './icons'
 
 const navItems = [
-  { href: '/', icon: '🌅', label: 'Brief' },
-  { href: '/tasks', icon: '✅', label: 'Tasks' },
-  { href: '/schedule', icon: '📅', label: 'Schedule' },
-  { href: '/challenges', icon: '⚡', label: 'Challenges' },
-  { href: '/quests', icon: '📜', label: 'Quests' },
-  { href: '/goals', icon: '🎯', label: 'Goals' },
-  { href: '/habits', icon: '🔥', label: 'Habits' },
-  { href: '/stats', icon: '📊', label: 'Stats' },
+  { href: '/', icon: HomeIcon, label: 'בית' },
+  { href: '/tasks', icon: TasksIcon, label: 'משימות' },
+  { href: '/goals', icon: GoalsIcon, label: 'מטרות' },
+  { href: '/challenges', icon: ChallengesIcon, label: 'אתגרים' },
+  { href: '/schedule', icon: ScheduleIcon, label: 'יומן' },
 ]
 
 export default function MobileNav() {
@@ -19,35 +17,26 @@ export default function MobileNav() {
 
   return (
     <nav
-      className="md:hidden fixed bottom-0 left-0 right-0 border-t flex"
+      className="md:hidden fixed bottom-0 left-0 right-0 border-t flex justify-around items-center"
       style={{
         background: 'var(--bg-card)',
         borderColor: 'var(--border)',
         zIndex: 50,
-        paddingBottom: 'env(safe-area-inset-bottom)',
+        padding: '9px 6px calc(20px + env(safe-area-inset-bottom))',
       }}
     >
       {navItems.map((item) => {
         const isActive = pathname === item.href
+        const Icon = item.icon
         return (
           <Link
             key={item.href}
             href={item.href}
-            aria-label={item.label}
-            title={item.label}
-            className="flex items-center justify-center flex-1 py-3"
+            className="flex flex-col items-center gap-[3px]"
+            style={{ color: isActive ? 'var(--accent-gold)' : 'var(--text-secondary)', textDecoration: 'none' }}
           >
-            <span
-              className="text-2xl leading-none flex items-center justify-center rounded-xl transition-all duration-200"
-              style={{
-                width: '44px',
-                height: '36px',
-                background: isActive ? 'rgba(59,130,246,0.18)' : 'transparent',
-                transform: isActive ? 'scale(1.08)' : 'scale(1)',
-              }}
-            >
-              {item.icon}
-            </span>
+            <Icon size={19} color={isActive ? 'var(--accent-gold)' : 'var(--text-secondary)'} />
+            <div style={{ fontSize: 9.5, fontWeight: item.href === '/' ? 600 : 400 }}>{item.label}</div>
           </Link>
         )
       })}
