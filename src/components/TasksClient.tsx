@@ -15,10 +15,11 @@ interface Task {
   scope: string
 }
 
-type Scope = 'today' | 'short_term' | 'long_term'
+type Scope = 'today' | 'tomorrow' | 'short_term' | 'long_term'
 
 const TABS: { scope: Scope; label: string }[] = [
   { scope: 'today', label: '📅 היום' },
+  { scope: 'tomorrow', label: '🌙 מחר' },
   { scope: 'short_term', label: '📆 טווח קרוב' },
   { scope: 'long_term', label: '🎯 טווח ארוך' },
 ]
@@ -33,14 +34,24 @@ const PRIORITY_LABELS: Record<string, { label: string; color: string }> = {
 
 interface Props {
   todayTasks: Task[]
+  tomorrowTasks: Task[]
   shortTermTasks: Task[]
   longTermTasks: Task[]
   dateStr: string
+  tomorrowDateStr: string
 }
 
-export default function TasksClient({ todayTasks, shortTermTasks, longTermTasks, dateStr }: Props) {
+export default function TasksClient({
+  todayTasks,
+  tomorrowTasks,
+  shortTermTasks,
+  longTermTasks,
+  dateStr,
+  tomorrowDateStr,
+}: Props) {
   const [byScope, setByScope] = useState<Record<Scope, Task[]>>(() => ({
     today: todayTasks,
+    tomorrow: tomorrowTasks,
     short_term: shortTermTasks,
     long_term: longTermTasks,
   }))
@@ -83,6 +94,11 @@ export default function TasksClient({ todayTasks, shortTermTasks, longTermTasks,
               {dateStr}
             </p>
           )}
+          {activeTab === 'tomorrow' && (
+            <p className="text-sm mt-0.5" style={{ color: 'var(--text-secondary)' }}>
+              {tomorrowDateStr}
+            </p>
+          )}
         </div>
         <button className="btn-primary" onClick={() => setShowModal(true)}>
           + הוסף משימה
@@ -109,10 +125,22 @@ export default function TasksClient({ todayTasks, shortTermTasks, longTermTasks,
       </div>
 
       {activeTab === 'today' && (
-        <TodayTab
+        <PriorityGroupedTab
           tasks={byScope.today}
+          showXp
+          isToday
           onToggle={(id) => toggleTask(id, 'today')}
           onDelete={(id) => deleteTask(id, 'today')}
+        />
+      )}
+
+      {activeTab === 'tomorrow' && (
+        <PriorityGroupedTab
+          tasks={byScope.tomorrow}
+          showXp
+          isToday={false}
+          onToggle={(id) => toggleTask(id, 'tomorrow')}
+          onDelete={(id) => deleteTask(id, 'tomorrow')}
         />
       )}
 
@@ -145,12 +173,16 @@ export default function TasksClient({ todayTasks, shortTermTasks, longTermTasks,
   )
 }
 
-function TodayTab({
+function PriorityGroupedTab({
   tasks,
+  showXp,
+  isToday,
   onToggle,
   onDelete,
 }: {
   tasks: Task[]
+  showXp: boolean
+  isToday: boolean
   onToggle: (id: number) => void
   onDelete: (id: number) => void
 }) {
@@ -183,8 +215,8 @@ function TodayTab({
                 <TaskRow
                   key={task.id}
                   task={task}
-                  showXp
-                  isToday
+                  showXp={showXp}
+                  isToday={isToday}
                   onToggle={() => onToggle(task.id)}
                   onDelete={() => onDelete(task.id)}
                 />

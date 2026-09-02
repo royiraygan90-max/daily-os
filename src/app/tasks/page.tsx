@@ -1,11 +1,17 @@
 import { prisma } from '@/lib/prisma'
-import { getTodayIST, xpForPriority } from '@/lib/utils'
+import { getTodayIST, addDaysToDate, xpForPriority } from '@/lib/utils'
 import TasksClient from '@/components/TasksClient'
 
 export const dynamic = 'force-dynamic'
 
 export default async function TasksPage() {
   const today = getTodayIST()
+
+  // Tasks planned "for tomorrow" whose date has now arrived become today's tasks
+  await prisma.task.updateMany({
+    where: { scope: 'tomorrow', date: { lte: today } },
+    data: { scope: 'today', date: today },
+  })
 
   const recurringTemplates = await prisma.task.findMany({
     where: { isRecurring: true, scope: 'today' },
@@ -32,8 +38,9 @@ export default async function TasksPage() {
     }
   }
 
-  const [todayTasks, shortTermTasks, longTermTasks] = await Promise.all([
+  const [todayTasks, tomorrowTasks, shortTermTasks, longTermTasks] = await Promise.all([
     prisma.task.findMany({ where: { date: today, scope: 'today' }, orderBy: { createdAt: 'asc' } }),
+    prisma.task.findMany({ where: { scope: 'tomorrow' }, orderBy: { createdAt: 'asc' } }),
     prisma.task.findMany({ where: { scope: 'short_term' }, orderBy: { createdAt: 'asc' } }),
     prisma.task.findMany({ where: { scope: 'long_term' }, orderBy: { createdAt: 'asc' } }),
   ])
@@ -45,12 +52,21 @@ export default async function TasksPage() {
     month: 'long',
   }).format(new Date())
 
+  const tomorrowDateStr = new Intl.DateTimeFormat('he-IL', {
+    timeZone: 'Asia/Jerusalem',
+    weekday: 'long',
+    day: 'numeric',
+    month: 'long',
+  }).format(new Date(addDaysToDate(today, 1) + 'T12:00:00'))
+
   return (
     <TasksClient
       todayTasks={todayTasks}
+      tomorrowTasks={tomorrowTasks}
       shortTermTasks={shortTermTasks}
       longTermTasks={longTermTasks}
       dateStr={dateStr}
+      tomorrowDateStr={tomorrowDateStr}
     />
   )
 }

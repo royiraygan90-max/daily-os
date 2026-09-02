@@ -2,7 +2,7 @@
 
 import { useState } from 'react'
 
-type Scope = 'today' | 'short_term' | 'long_term'
+type Scope = 'today' | 'tomorrow' | 'short_term' | 'long_term'
 
 interface Task {
   id: number
@@ -30,6 +30,7 @@ const priorities = [
 
 const scopes: { value: Scope; label: string }[] = [
   { value: 'today', label: 'היום' },
+  { value: 'tomorrow', label: 'מחר' },
   { value: 'short_term', label: 'טווח קרוב' },
   { value: 'long_term', label: 'טווח ארוך' },
 ]
@@ -92,7 +93,7 @@ export default function AddTaskModal({ defaultScope, onClose, onAdd }: AddTaskMo
             <label className="text-sm block mb-1" style={{ color: 'var(--text-secondary)' }}>
               טווח
             </label>
-            <div className="grid grid-cols-3 gap-2">
+            <div className="grid grid-cols-2 gap-2">
               {scopes.map((s) => (
                 <button
                   key={s.value}
