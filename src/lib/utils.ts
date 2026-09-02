@@ -11,6 +11,11 @@ export function getTodayIST(): string {
   return new Intl.DateTimeFormat('en-CA', { timeZone: 'Asia/Jerusalem' }).format(new Date())
 }
 
+// Tomorrow's date in Israel timezone as "YYYY-MM-DD"
+export function getTomorrowIST(): string {
+  return addDaysToDate(getTodayIST(), 1)
+}
+
 // Hebrew date display: "יום שני, 8 ביוני 2026"
 export function getHebrewDate(dateStr?: string): string {
   const date = dateStr ? new Date(dateStr + 'T00:00:00') : new Date()

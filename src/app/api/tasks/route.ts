@@ -1,5 +1,5 @@
 import { prisma } from '@/lib/prisma'
-import { getTodayIST, xpForPriority } from '@/lib/utils'
+import { getTodayIST, getTomorrowIST, xpForPriority } from '@/lib/utils'
 import { NextRequest } from 'next/server'
 
 export async function GET(request: NextRequest) {
@@ -47,7 +47,7 @@ export async function GET(request: NextRequest) {
 export async function POST(request: NextRequest) {
   const { text, priority, isRecurring, date, scope } = await request.json()
   const taskScope = scope || 'today'
-  const d = date || getTodayIST()
+  const d = date || (taskScope === 'tomorrow' ? getTomorrowIST() : getTodayIST())
   const xpValue = xpForPriority(priority || 'medium')
   const task = await prisma.task.create({
     data: {
