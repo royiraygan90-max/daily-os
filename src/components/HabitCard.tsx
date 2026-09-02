@@ -18,7 +18,7 @@ export default function HabitCard({ id, name, icon, xpValue, completedToday, onT
   const [showXP, setShowXP] = useState(false)
 
   async function handleToggle() {
-    if (loading) return
+    if (loading || completed) return
     setLoading(true)
     const res = await fetch(`/api/habits/${id}/complete`, { method: 'POST' })
     const data = await res.json()
@@ -35,12 +35,13 @@ export default function HabitCard({ id, name, icon, xpValue, completedToday, onT
   return (
     <button
       onClick={handleToggle}
-      disabled={loading}
-      className="card relative flex flex-col items-center gap-2 p-4 w-full text-center cursor-pointer select-none"
+      disabled={loading || completed}
+      className="card relative flex flex-col items-center gap-2 p-4 w-full text-center select-none"
       style={{
         borderColor: completed ? 'var(--accent-green)' : 'var(--border)',
         background: completed ? 'rgba(52,211,153,0.08)' : 'var(--bg-card)',
         opacity: loading ? 0.7 : 1,
+        cursor: completed ? 'default' : 'pointer',
       }}
     >
       <span className="text-3xl">{icon}</span>

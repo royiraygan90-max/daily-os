@@ -19,14 +19,12 @@ export async function POST(
     where: { habitId_date: { habitId, date: today } },
   })
 
-  if (existing) {
-    await prisma.habitLog.delete({ where: { id: existing.id } })
-  } else {
+  // Completing is one-way for the day — no accidental un-completing by tapping again
+  if (!existing) {
     await prisma.habitLog.create({ data: { habitId, date: today } })
     await addTotalXp(habit.xpValue)
+    await recalcDailyScore(today)
   }
 
-  await recalcDailyScore(today)
-
-  return Response.json({ completedToday: !existing, habit })
+  return Response.json({ completedToday: true, habit })
 }
