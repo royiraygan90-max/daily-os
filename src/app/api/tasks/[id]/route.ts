@@ -12,9 +12,19 @@ export async function PATCH(
   const body = await request.json()
 
   const existing = await prisma.task.findUnique({ where: { id: taskId } })
-  const task = await prisma.task.update({ where: { id: taskId }, data: body })
+  if (!existing) return Response.json({ error: 'Not found' }, { status: 404 })
 
-  if (!existing?.completed && task.completed) {
+  // A task can only ever pay out its XP once — completed can be toggled back
+  // and forth afterwards without re-earning it.
+  const willComplete = 'completed' in body ? body.completed : existing.completed
+  const shouldAwardXp = !existing.completed && willComplete && !existing.xpAwarded
+
+  const task = await prisma.task.update({
+    where: { id: taskId },
+    data: shouldAwardXp ? { ...body, xpAwarded: true } : body,
+  })
+
+  if (shouldAwardXp) {
     await addTotalXp(task.xpValue)
   }
 
