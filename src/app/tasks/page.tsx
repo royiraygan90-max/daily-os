@@ -1,11 +1,19 @@
 import { prisma } from '@/lib/prisma'
 import { getTodayIST, addDaysToDate, xpForPriority } from '@/lib/utils'
+import { recalcDailyScore } from '@/lib/recalcDailyScore'
 import TasksClient from '@/components/TasksClient'
 
 export const dynamic = 'force-dynamic'
 
 export default async function TasksPage() {
   const today = getTodayIST()
+
+  // Unfinished "today" tasks from a previous day stay put instead of vanishing —
+  // carry them into today so they keep showing up until they're done.
+  await prisma.task.updateMany({
+    where: { scope: 'today', completed: false, date: { lt: today } },
+    data: { date: today },
+  })
 
   // Tasks planned "for tomorrow" whose date has now arrived become today's tasks
   await prisma.task.updateMany({
@@ -37,6 +45,8 @@ export default async function TasksPage() {
       })
     }
   }
+
+  await recalcDailyScore(today)
 
   const [todayTasks, tomorrowTasks, shortTermTasks, longTermTasks] = await Promise.all([
     prisma.task.findMany({ where: { date: today, scope: 'today' }, orderBy: { createdAt: 'asc' } }),
