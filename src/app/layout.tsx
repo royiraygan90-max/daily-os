@@ -8,12 +8,20 @@ import MobileNav from '@/components/MobileNav'
 export const metadata: Metadata = {
   title: 'Daily OS ⚡',
   description: 'RPG-style personal productivity system',
+  appleWebApp: {
+    capable: true,
+    title: 'Daily OS',
+    statusBarStyle: 'default',
+  },
 }
 
 export const viewport: Viewport = {
   width: 'device-width',
   initialScale: 1,
+  maximumScale: 1,
+  userScalable: false,
   viewportFit: 'cover',
+  themeColor: '#0a0a0c',
 }
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
@@ -21,7 +29,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     <html lang="he" dir="rtl" suppressHydrationWarning>
       <body>
         <ThemeWrapper>
-          <div className="flex min-h-screen">
+          <div className="flex min-h-screen pt-[env(safe-area-inset-top)]">
             <Sidebar />
             <div className="flex flex-col flex-1 min-w-0">
               <TopBar />
